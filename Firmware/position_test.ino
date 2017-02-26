@@ -7,26 +7,37 @@ int clearPin  = D3;
 int sensorPin = D5;
 int ledPin    = D7;
 
-#define COUNT 8
-int count = COUNT;
-
-int status[COUNT];
+const int count = 8;
 
 class Position {
   public:
     String position;
-    Position(String newPosition) {
-      position = newPosition;
+    int    index;
+    int    value;
+    long   lastChange;
+    Position(String newPosition, int newIndex) {
+      position   = newPosition;
+      index      = newIndex;
+      value      = 0;
+      lastChange = 0;
     }
 
-    int value = 0;
-    void setValue(int newValue) {
-      value = newValue;
+    void setValue(int newValue, long currentTime) {
+      value      = newValue;
+      lastChange = currentTime;
     }
 };
 
-Position left  = Position("c3");
-Position right = Position("c4");
+Position positions[count] = {
+  Position("c1", 0),
+  Position("c2", 1),
+  Position("c3", 2),
+  Position("c4", 3),
+  Position("c5", 4),
+  Position("c6", 5),
+  Position("c7", 6),
+  Position("c8", 7)
+};
 
 void setup() {
   pinMode(latchPin, OUTPUT);
@@ -41,7 +52,6 @@ void setup() {
 
 void loop() {
   fetchSensorData();
-  updatePositions();
   printStatus();
   delay(500);
 }
@@ -51,20 +61,17 @@ void fetchSensorData() {
 
   for (int i = 0; i < count; i++) {
     // Set first memory value HIGH, then push LOWs in.
-    // This moves the HIGH bit through every register pin
-    // which we then read to determine if that sensor is on.
     digitalWrite(dataPin, i == 0);
-
     advanceClock();
     latch();
 
-    status[i] = digitalRead(sensorPin);
-  }
-}
+    int sensorValue = digitalRead(sensorPin);
+    Position &position = positions[i];
 
-void updatePositions() {
-  left.setValue(status[6]);
-  right.setValue(status[7]);
+    if (sensorValue != position.value) {
+      position.setValue(sensorValue, millis());
+    }
+  }
 }
 
 void clear() {
@@ -83,17 +90,15 @@ void latch() {
 }
 
 void printStatus() {
-  // for (int i = 0; i < count; i++) {
-  //   Serial.print(status[i]);
-  //   if (i != count-1) Serial.print(",");
-  // }
-  // Serial.println("");
+  for (int i = 0; i < count; i++) {
+    Serial.print(positions[i].position);
+    Serial.print(":");
+    Serial.print(positions[i].value);
 
-  Serial.print(left.position);
-  Serial.print(":");
-  Serial.print(left.value);
-  Serial.print(",");
-  Serial.print(right.position);
-  Serial.print(":");
-  Serial.println(right.value);
+    if (i == count - 1) {
+      Serial.println("");
+    } else {
+      Serial.print(",");
+    }
+  }
 }
