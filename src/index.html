@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Page Title</title>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+  <script src="js/chessboard.js"></script>
+  <link rel="stylesheet" type="text/css" href="css/chessboard.css">
+</head>
+<body>
+
+  <h1>Chess Board</h1>
+  <div id="board1" style="width: 400px"></div>
+  <div id="board2" style="width: 400px"></div>
+
+</body>
+</html>
+
+<script>
+$(document).ready(function() {
+  var opts = {
+    position: {
+      c3: 'wP',
+    },
+    draggable: true
+  };
+  var board1 = ChessBoard('board1', opts);
+
+  ws = new WebSocket("ws://localhost:8080");
+
+  ws.onopen = function() {
+    ws.send("hello server");
+  };
+  ws.onclose = function() {};
+
+  ws.onmessage = function(event) {
+    var message = JSON.parse(event.data);
+    console.log(message.event)
+
+    if (message.event == "right") {
+      board1.position({d3: 'wP'})
+    } else if (message.event == "left") {
+      board1.position({c3: 'wP'})
+    }
+
+    // send a dummy message back to initiate
+    // the onmessage callback again
+    ws.send("next message please!");
+  }
+});
+</script>
