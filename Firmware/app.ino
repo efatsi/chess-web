@@ -5,44 +5,55 @@ int clearPin  = D3;
 
 int sensorPin = D5;
 
-const int count = 8;
-
 class Position {
-  #define UNSTABLE_OFF 0
-  #define UNSTABLE_ON  1
-  #define STABLE_OFF   2
-  #define STABLE_ON    3
-  #define CONFIRMED    4
+  #define UNSTABLE_OFF    0
+  #define UNSTABLE_ON     1
+  #define UNSTABLE_OFF_ON 2
+  #define STABLE_OFF      3
+  #define STABLE_ON       4
+  #define STABLE_OFF_ON   5
+  #define CONFIRMED       6
+
+  #define EMPTY 0
+  #define WHITE 1
+  #define BLACK 2
 
   public:
     String position;
+    int    occupied;
     int    state;
     int    index;
     int    value;
     long   lastChange;
-    Position(String newPosition, int newIndex) {
+    Position(String newPosition, int newIndex, int newOccupied) {
       position   = newPosition;
       state      = CONFIRMED;
       index      = newIndex;
-      value      = 0;
+      occupied   = newOccupied;
+      value      = occupied ? 1 : 0;
       lastChange = 0;
     }
 
-    void setValue(int newValue, long currentTime) {
+    void setValue(int newValue, int player, long currentTime) {
       value      = newValue;
       lastChange = currentTime;
 
       if (newValue) {
         if (state == UNSTABLE_OFF || state == STABLE_OFF) {
-          // changed their mind ... or TODO: check if user's piece of taking other's
-          confirmState();
+          if (occupied == player) {
+            // changed their mind
+            state = CONFIRMED;
+          } else {
+            // player's piece of taking other's
+            state = UNSTABLE_OFF_ON;
+          }
         } else {
           state = UNSTABLE_ON;
         }
       } else {
         if (state == UNSTABLE_ON) {
           // on blip - likely just a passing piece;
-          confirmState();
+          state = CONFIRMED;
         } else {
           state = UNSTABLE_OFF;
         }
@@ -58,11 +69,32 @@ class Position {
           case UNSTABLE_ON:
             state = STABLE_ON;
             break;
+          case UNSTABLE_OFF_ON:
+            state = STABLE_OFF_ON;
+            break;
         }
       }
     }
 
-    void confirmState() {
+    void confirmState(int player) {
+      switch (state) {
+        case STABLE_OFF:
+          occupied = EMPTY;
+          break;
+        case STABLE_ON:
+          occupied = player;
+          break;
+        case STABLE_OFF_ON:
+          occupied = player;
+          break;
+      }
+
+      Serial.print(position);
+      Serial.print(",");
+      Serial.print(state);
+      Serial.print(",");
+      Serial.println(occupied);
+
       state = CONFIRMED;
     }
 
@@ -77,7 +109,14 @@ class Position {
         case STABLE_ON:
           return "stable_on    ";
         case CONFIRMED:
-          return "confirmed    ";
+          switch (occupied) {
+            case WHITE:
+              return "confirmed W  ";
+            case BLACK:
+              return "confirmed B  ";
+            case EMPTY:
+              return "confirmed _  ";
+          }
       }
     }
 
@@ -91,15 +130,19 @@ class Position {
     }
 };
 
+const int count = 8;
+
+int currentPlayer = WHITE;
+
 Position positions[count] = {
-  Position("c1", 0),
-  Position("c2", 1),
-  Position("c3", 2),
-  Position("c4", 3),
-  Position("c5", 4),
-  Position("c6", 5),
-  Position("c7", 6),
-  Position("c8", 7)
+  Position("c1", 0, EMPTY),
+  Position("c2", 1, EMPTY),
+  Position("c3", 2, EMPTY),
+  Position("c4", 3, EMPTY),
+  Position("c5", 4, EMPTY),
+  Position("c6", 5, EMPTY),
+  Position("c7", 6, WHITE),
+  Position("c8", 7, EMPTY)
 };
 
 void setup() {
@@ -110,9 +153,6 @@ void setup() {
   digitalWrite(clearPin, HIGH);
 
   pinMode(sensorPin, INPUT);
-
-  fetchSensorData();
-  confirmChanges();
 }
 
 void loop() {
@@ -134,7 +174,7 @@ void fetchSensorData() {
     Position &position = positions[i];
 
     if (sensorValue != position.value) {
-      position.setValue(sensorValue, millis());
+      position.setValue(sensorValue, currentPlayer, millis());
     } else {
       position.checkStability();
     }
@@ -195,7 +235,7 @@ void printStatus() {
 void confirmChanges() {
   for (int i = 0; i < count; i++) {
     Position &position = positions[i];
-    position.confirmState();
+    position.confirmState(currentPlayer);
   }
 }
 
