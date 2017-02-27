@@ -164,20 +164,20 @@ void checkForMove() {
 }
 
 void printStatus() {
-  // delay(500);
+  delay(500);
 
-  // Position &position = positions[6];
-  // Serial.print("1: ");
-  // Serial.print(position.value);
-  // Serial.print(" ");
-  // Serial.print(position.printState());
-  //
-  // Position &position2 = positions[7];
-  // Serial.print("2: ");
-  // Serial.print(position2.value);
-  // Serial.print(" ");
-  // Serial.print(position2.printState());
-  // Serial.println("");
+  Position &position = positions[6];
+  Serial.print("1: ");
+  Serial.print(position.value);
+  Serial.print(" ");
+  Serial.print(position.printState());
+
+  Position &position2 = positions[7];
+  Serial.print("2: ");
+  Serial.print(position2.value);
+  Serial.print(" ");
+  Serial.print(position2.printState());
+  Serial.println("");
 
   // for (int i = 0; i < count; i++) {
   //   Serial.print(positions[i].position);
