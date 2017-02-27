@@ -89,40 +89,80 @@ class Position {
           break;
       }
 
-      Serial.print(position);
-      Serial.print(",");
-      Serial.print(state);
-      Serial.print(",");
-      Serial.println(occupied);
-
       state = CONFIRMED;
     }
 
     String printState() {
       switch (state) {
         case UNSTABLE_OFF:
-          return "unstable_off ";
+          switch (occupied) {
+            case WHITE:
+              return "unstable_off W  ";
+            case BLACK:
+              return "unstable_off B  ";
+            case EMPTY:
+              return "unstable_off _  ";
+          }
         case UNSTABLE_ON:
-          return "unstable_on  ";
+          switch (occupied) {
+            case WHITE:
+              return "unstable_on  W  ";
+            case BLACK:
+              return "unstable_on  B  ";
+            case EMPTY:
+              return "unstable_on  _  ";
+          }
+        case UNSTABLE_OFF_ON:
+          switch (occupied) {
+            case WHITE:
+              return "unstable_ofn W  ";
+            case BLACK:
+              return "unstable_ofn B  ";
+            case EMPTY:
+              return "unstable_ofn _  ";
+          }
+        case STABLE_OFF_ON:
+          switch (occupied) {
+            case WHITE:
+              return "stable_ofn   W  ";
+            case BLACK:
+              return "stable_ofn   B  ";
+            case EMPTY:
+              return "stable_ofn   _  ";
+          }
         case STABLE_OFF:
-          return "stable_off   ";
+          switch (occupied) {
+            case WHITE:
+              return "stable_off   W  ";
+            case BLACK:
+              return "stable_off   B  ";
+            case EMPTY:
+              return "stable_off   _  ";
+          }
         case STABLE_ON:
-          return "stable_on    ";
+          switch (occupied) {
+            case WHITE:
+              return "stable_on    W  ";
+            case BLACK:
+              return "stable_on    B  ";
+            case EMPTY:
+              return "stable_on    _  ";
+          }
         case CONFIRMED:
           switch (occupied) {
             case WHITE:
-              return "confirmed W  ";
+              return "confirmed    W  ";
             case BLACK:
-              return "confirmed B  ";
+              return "confirmed    B  ";
             case EMPTY:
-              return "confirmed _  ";
+              return "confirmed    _  ";
           }
       }
     }
 
   private:
     bool _unstable() {
-      return state == UNSTABLE_ON || state == UNSTABLE_OFF;
+      return state == UNSTABLE_ON || state == UNSTABLE_OFF || state == UNSTABLE_OFF_ON;
     }
 
     bool _changeIsOld() {
@@ -142,7 +182,7 @@ Position positions[count] = {
   Position("c5", 4, EMPTY),
   Position("c6", 5, EMPTY),
   Position("c7", 6, WHITE),
-  Position("c8", 7, EMPTY)
+  Position("c8", 7, BLACK)
 };
 
 void setup() {
@@ -182,8 +222,9 @@ void fetchSensorData() {
 }
 
 void checkForMove() {
-  String stableOff = "";
-  String stableOn  = "";
+  String stableOff   = "";
+  String stableOn    = "";
+  String stableOffOn = "";
 
   for (int i = 0; i < count; i++) {
     Position &position = positions[i];
@@ -191,15 +232,26 @@ void checkForMove() {
     if (position.state == STABLE_OFF) {
       stableOff = position.position;
     } else if (position.state == STABLE_ON) {
-      stableOn  = position.position;
+      stableOn = position.position;
+    } else if (position.state == STABLE_OFF_ON) {
+      stableOffOn = position.position;
     }
   }
 
-  if (stableOff != "" && stableOn != "") {
-    Serial.print(stableOff);
-    Serial.print("-");
-    Serial.println(stableOn);
-    confirmChanges();
+  if (stableOff != "") {
+    if (stableOn != "") {
+      // Regular move
+      Serial.print(stableOff);
+      Serial.print("-");
+      Serial.println(stableOn);
+      confirmChanges();
+    } else if (stableOffOn != "") {
+      // Taking piece
+      Serial.print(stableOff);
+      Serial.print("x");
+      Serial.println(stableOffOn);
+      confirmChanges();
+    }
   }
 }
 
