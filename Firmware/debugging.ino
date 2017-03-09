@@ -1,31 +1,31 @@
 // call printStatus in loop()
 void printStatus() {
-  delay(500);
-
-  Position &position = positions[6];
-  Serial.print("1: ");
-  Serial.print(position.value);
-  Serial.print(" ");
-  Serial.print(position.printState());
-
-  Position &position2 = positions[7];
-  Serial.print("2: ");
-  Serial.print(position2.value);
-  Serial.print(" ");
-  Serial.print(position2.printState());
-  Serial.println("");
-
-  // for (int i = 0; i < count; i++) {
-  //   Serial.print(positions[i].position);
-  //   Serial.print(":");
-  //   Serial.print(positions[i].value);
+  // Position &position = positions[6];
+  // Serial.print("1: ");
+  // Serial.print(position.value);
+  // Serial.print(" ");
+  // Serial.print(position.printState());
   //
-  //   if (i == count - 1) {
-  //     Serial.println("");
-  //   } else {
-  //     Serial.print(",");
-  //   }
-  // }
+  // Position &position2 = positions[7];
+  // Serial.print("2: ");
+  // Serial.print(position2.value);
+  // Serial.print(" ");
+  // Serial.print(position2.printState());
+  // Serial.println("");
+
+  for (int i = 0; i < count; i++) {
+    Serial.print(positions[i].position);
+    Serial.print(":");
+    Serial.print(positions[i].value);
+
+    if (i == count - 1) {
+      Serial.println("");
+    } else {
+      Serial.print(",");
+    }
+  }
+
+  delay(500);
 }
 
 

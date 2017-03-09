@@ -1,9 +1,9 @@
-int dataPin   = D2;
-int clockPin  = D0;
-int latchPin  = D1;
+int dataPin   = D6;
+int clockPin  = D4;
+int latchPin  = D5;
 int clearPin  = D3;
 
-int sensorPin = D5;
+int sensorPin = A5;
 
 class Position {
   #define UNSTABLE_OFF    0
