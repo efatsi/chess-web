@@ -142,6 +142,10 @@ void fetchSensorData() {
     latch();
 
     int sensorValue = digitalRead(sensorPin);
+
+    Serial.print(sensorValue);
+    Serial.print(" ");
+
     Position &position = positions[i];
 
     if (sensorValue != position.value) {
@@ -150,6 +154,7 @@ void fetchSensorData() {
       position.checkStability();
     }
   }
+  Serial.println();
 }
 
 void checkForMove() {
