@@ -116,7 +116,7 @@ Position positions[count] = {
   Position("a4", 4, EMPTY),
   Position("a3", 5, EMPTY),
   Position("a2", 6, EMPTY),
-  Position("a1", 7, EMPTY),
+  Position("a1", 7, WHITE),
 
   Position("b8", 8, EMPTY),
   Position("b7", 9, EMPTY),

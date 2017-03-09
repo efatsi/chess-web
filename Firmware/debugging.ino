@@ -14,17 +14,14 @@ void printStatus() {
   // Serial.println("");
 
   for (int i = 0; i < count; i++) {
-    Serial.print(positions[i].position);
-    Serial.print(":");
     Serial.print(positions[i].value);
+    Serial.print(" ");
 
-    if (i == count - 1) {
-      Serial.println("");
-    } else {
-      Serial.print(",");
+    if ((i+1) % 8 == 0) {
+      Serial.println();
     }
   }
-
+  Serial.println();
   delay(500);
 }
 

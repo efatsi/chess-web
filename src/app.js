@@ -1,8 +1,7 @@
 $(document).ready(function() {
   var opts = {
     position: {
-      c7: 'wP',
-      c8: 'bP',
+      a1: 'wQ',
     },
     draggable: true
   };
