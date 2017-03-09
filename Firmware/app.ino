@@ -18,6 +18,8 @@ class Position {
   #define WHITE 1
   #define BLACK 2
 
+  #define CONFIRM_TIME 200
+
   public:
     String position;
     int    occupied;
@@ -98,23 +100,86 @@ class Position {
     }
 
     bool _changeIsOld() {
-      return millis() - lastChange > 1000;
+      return millis() - lastChange > CONFIRM_TIME;
     }
 };
 
-const int count = 8;
+const int count = 64;
 
 int currentPlayer = WHITE;
 
 Position positions[count] = {
-  Position("c1", 0, EMPTY),
-  Position("c2", 1, EMPTY),
-  Position("c3", 2, EMPTY),
-  Position("c4", 3, EMPTY),
-  Position("c5", 4, EMPTY),
-  Position("c6", 5, EMPTY),
-  Position("c7", 6, WHITE),
-  Position("c8", 7, BLACK)
+  Position("a8", 0, EMPTY),
+  Position("a7", 1, EMPTY),
+  Position("a6", 2, EMPTY),
+  Position("a5", 3, EMPTY),
+  Position("a4", 4, EMPTY),
+  Position("a3", 5, EMPTY),
+  Position("a2", 6, EMPTY),
+  Position("a1", 7, EMPTY),
+
+  Position("b8", 8, EMPTY),
+  Position("b7", 9, EMPTY),
+  Position("b6", 10, EMPTY),
+  Position("b5", 11, EMPTY),
+  Position("b4", 12, EMPTY),
+  Position("b3", 13, EMPTY),
+  Position("b2", 14, EMPTY),
+  Position("b1", 15, EMPTY),
+
+  Position("c8", 16, EMPTY),
+  Position("c7", 17, EMPTY),
+  Position("c6", 18, EMPTY),
+  Position("c5", 19, EMPTY),
+  Position("c4", 12, EMPTY),
+  Position("c3", 13, EMPTY),
+  Position("c2", 22, EMPTY),
+  Position("c1", 23, EMPTY),
+
+  Position("d8", 24, EMPTY),
+  Position("d7", 25, EMPTY),
+  Position("d6", 26, EMPTY),
+  Position("d5", 27, EMPTY),
+  Position("d4", 28, EMPTY),
+  Position("d3", 29, EMPTY),
+  Position("d2", 30, EMPTY),
+  Position("d1", 31, EMPTY),
+
+  Position("e8", 32, EMPTY),
+  Position("e7", 33, EMPTY),
+  Position("e6", 34, EMPTY),
+  Position("e5", 35, EMPTY),
+  Position("e4", 36, EMPTY),
+  Position("e3", 37, EMPTY),
+  Position("e2", 38, EMPTY),
+  Position("e1", 39, EMPTY),
+
+  Position("f8", 40, EMPTY),
+  Position("f7", 41, EMPTY),
+  Position("f6", 42, EMPTY),
+  Position("f5", 43, EMPTY),
+  Position("f4", 44, EMPTY),
+  Position("f3", 45, EMPTY),
+  Position("f2", 46, EMPTY),
+  Position("f1", 47, EMPTY),
+
+  Position("g8", 48, EMPTY),
+  Position("g7", 49, EMPTY),
+  Position("g6", 50, EMPTY),
+  Position("g5", 51, EMPTY),
+  Position("g4", 52, EMPTY),
+  Position("g3", 53, EMPTY),
+  Position("g2", 54, EMPTY),
+  Position("g1", 55, EMPTY),
+
+  Position("h8", 56, EMPTY),
+  Position("h7", 57, EMPTY),
+  Position("h6", 58, EMPTY),
+  Position("h5", 59, EMPTY),
+  Position("h4", 60, EMPTY),
+  Position("h3", 61, EMPTY),
+  Position("h2", 62, EMPTY),
+  Position("h1", 63, EMPTY)
 };
 
 void setup() {
@@ -143,9 +208,6 @@ void fetchSensorData() {
 
     int sensorValue = digitalRead(sensorPin);
 
-    Serial.print(sensorValue);
-    Serial.print(" ");
-
     Position &position = positions[i];
 
     if (sensorValue != position.value) {
@@ -154,7 +216,6 @@ void fetchSensorData() {
       position.checkStability();
     }
   }
-  Serial.println();
 }
 
 void checkForMove() {
