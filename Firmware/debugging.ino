@@ -1,96 +1,110 @@
-// call printStatus in loop()
 void printStatus() {
-  // Position &position = positions[6];
-  // Serial.print("1: ");
-  // Serial.print(position.value);
-  // Serial.print(" ");
-  // Serial.print(position.printState());
-  //
-  // Position &position2 = positions[7];
-  // Serial.print("2: ");
-  // Serial.print(position2.value);
-  // Serial.print(" ");
-  // Serial.print(position2.printState());
-  // Serial.println("");
-
-  for (int i = 0; i < count; i++) {
-    Serial.print(positions[i].value);
-    Serial.print(" ");
-
-    if ((i+1) % 8 == 0) {
-      Serial.println();
+  for (int i = 0; i < 8; i++) {
+    for (int j = 0; j < 8; j++) {
+      int index = i + (j * 8);
+      Serial.print(positions[index].value);
+      Serial.print(" ");
     }
+
+    Serial.println();
   }
   Serial.println();
-  delay(500);
+  delay(200);
 }
 
 
-// Position#printState()
-String printState() {
-  switch (state) {
-    case UNSTABLE_OFF:
-      switch (occupied) {
-        case WHITE:
-          return "unstable_off W  ";
-        case BLACK:
-          return "unstable_off B  ";
-        case EMPTY:
-          return "unstable_off _  ";
+void printStatus() {
+  for (int i = 0; i < 8; i++) {
+    for (int j = 0; j < 8; j++) {
+      int index = i + (j * 8);
+      Position &position = positions[index];
+
+      if (position.state != CONFIRMED) {
+        Serial.print(position.position);
+        Serial.print(": ");
+
+        switch (position.state) {
+          case UNSTABLE_OFF:
+            switch (position.occupied) {
+              case WHITE:
+                Serial.println("unstable_off W  ");
+                break;
+              case BLACK:
+                Serial.println("unstable_off B  ");
+                break;
+              case EMPTY:
+                Serial.println("unstable_off _  ");
+                break;
+            }
+            break;
+          case UNSTABLE_ON:
+            switch (position.occupied) {
+              case WHITE:
+                Serial.println("unstable_on  W  ");
+                break;
+              case BLACK:
+                Serial.println("unstable_on  B  ");
+                break;
+              case EMPTY:
+                Serial.println("unstable_on  _  ");
+                break;
+            }
+            break;
+          case UNSTABLE_OFF_ON:
+            switch (position.occupied) {
+              case WHITE:
+                Serial.println("unstable_ofn W  ");
+                break;
+              case BLACK:
+                Serial.println("unstable_ofn B  ");
+                break;
+              case EMPTY:
+                Serial.println("unstable_ofn _  ");
+                break;
+            }
+            break;
+          case STABLE_OFF_ON:
+            switch (position.occupied) {
+              case WHITE:
+                Serial.println("stable_ofn   W  ");
+                break;
+              case BLACK:
+                Serial.println("stable_ofn   B  ");
+                break;
+              case EMPTY:
+                Serial.println("stable_ofn   _  ");
+                break;
+            }
+            break;
+          case STABLE_OFF:
+            switch (position.occupied) {
+              case WHITE:
+                Serial.println("stable_off   W  ");
+                break;
+              case BLACK:
+                Serial.println("stable_off   B  ");
+                break;
+              case EMPTY:
+                Serial.println("stable_off   _  ");
+                break;
+            }
+            break;
+          case STABLE_ON:
+            switch (position.occupied) {
+              case WHITE:
+                Serial.println("stable_on    W  ");
+                break;
+              case BLACK:
+                Serial.println("stable_on    B  ");
+                break;
+              case EMPTY:
+                Serial.println("stable_on    _  ");
+                break;
+            }
+            break;
+        }
       }
-    case UNSTABLE_ON:
-      switch (occupied) {
-        case WHITE:
-          return "unstable_on  W  ";
-        case BLACK:
-          return "unstable_on  B  ";
-        case EMPTY:
-          return "unstable_on  _  ";
-      }
-    case UNSTABLE_OFF_ON:
-      switch (occupied) {
-        case WHITE:
-          return "unstable_ofn W  ";
-        case BLACK:
-          return "unstable_ofn B  ";
-        case EMPTY:
-          return "unstable_ofn _  ";
-      }
-    case STABLE_OFF_ON:
-      switch (occupied) {
-        case WHITE:
-          return "stable_ofn   W  ";
-        case BLACK:
-          return "stable_ofn   B  ";
-        case EMPTY:
-          return "stable_ofn   _  ";
-      }
-    case STABLE_OFF:
-      switch (occupied) {
-        case WHITE:
-          return "stable_off   W  ";
-        case BLACK:
-          return "stable_off   B  ";
-        case EMPTY:
-          return "stable_off   _  ";
-      }
-    case STABLE_ON:
-      switch (occupied) {
-        case WHITE:
-          return "stable_on    W  ";
-        case BLACK:
-          return "stable_on    B  ";
-        case EMPTY:
-          return "stable_on    _  ";
-      }
-    case CONFIRMED:
-      switch (occupied) {
-        case WHITE:
-          return "confirmed    W  ";
-        case BLACK:
-          return "confirmed    B  ";
-        case EMPTY:
-          return "confirmed    _  ";
-      }
+    }
   }
+  delay(500);
 }
