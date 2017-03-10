@@ -1,7 +1,17 @@
 $(document).ready(function() {
   var opts = {
     position: {
-      a1: 'wQ',
+      c7: 'wP',
+      d7: 'wP',
+      e7: 'wP',
+      f7: 'wP',
+      g7: 'wN',
+      a3: 'bB',
+      c3: 'bP',
+      d3: 'bP',
+      e3: 'bP',
+      f3: 'bP',
+      g3: 'bN',
     },
     draggable: true
   };
