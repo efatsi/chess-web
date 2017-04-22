@@ -1,16 +1,18 @@
 #include "Position.h"
 
-int dataPin   = D6;
-int clockPin  = D4;
-int latchPin  = D5;
-int clearPin  = D3;
-
-int sensorPin = A5;
+// Shift Register pins
+int sensorPin = D0;
+int clearPin  = D1;
+int clockPin  = D2;
+int latchPin  = D3;
+int dataPin   = D4;
 
 const int count = 64;
 
 int currentPlayer = WHITE;
 int otherPlayer   = BLACK;
+
+SYSTEM_MODE(MANUAL);
 
 Position positions[count] = {
   Position("a8", BLACK),
@@ -227,15 +229,15 @@ void latch() {
 }
 
 void printStatus() {
-  // for (int i = 0; i < 8; i++) {
-  //   for (int j = 0; j < 8; j++) {
-  //     int index = i + (j * 8);
-  //     Serial.print(positions[index].value);
-  //     Serial.print(" ");
-  //   }
-  //
-  //   Serial.println();
-  // }
-  // Serial.println();
-  // delay(200);
+  for (int i = 0; i < 8; i++) {
+    for (int j = 0; j < 8; j++) {
+      int index = i + (j * 8);
+      Serial.print(positions[index].value);
+      Serial.print(" ");
+    }
+
+    Serial.println();
+  }
+  Serial.println();
+  delay(200);
 }
