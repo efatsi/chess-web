@@ -11,7 +11,7 @@ int dataPin   = D4;
 int ledPin    = D5;
 int playerPin = D6;
 
-LiquidCrystal lcd(A5, A4, A3, A2, A1, A0);
+LiquidCrystal lcd(A0, A1, A2, A3, A4, A5);
 
 const int count = 64;
 
