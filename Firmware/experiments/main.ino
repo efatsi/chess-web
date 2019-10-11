@@ -4,8 +4,8 @@ SYSTEM_MODE(MANUAL);
 
 const int inputPin = A0;
 
-#define ROWS 2
-#define COLUMNS 2
+#define ROWS 1
+#define COLUMNS 8
 #define TOTAL (ROWS * COLUMNS)
 
 int readings[ROWS][COLUMNS];
@@ -68,10 +68,10 @@ void showOnOffs() {
     Serial.print(0);
   }
   Serial.print("\t");
+  Serial.print(readings[0][1]);
+  Serial.print("\t");
   Serial.print((readings[0][1] * 100 / upperNorm));
   Serial.print("%");
-  Serial.print("\t");
-  Serial.print(readings[0][1]);
   Serial.print("\t\t");
 
   if ((readings[0][0] * 100 / upperNorm) < 35) {
@@ -80,10 +80,10 @@ void showOnOffs() {
     Serial.print(0);
   }
   Serial.print("\t");
+  Serial.print(readings[0][0]);
+  Serial.print("\t");
   Serial.print((readings[0][0] * 100 / upperNorm));
   Serial.print("%");
-  Serial.print("\t");
-  Serial.print(readings[0][0]);
   Serial.print("\t\t");
 
   if ((readings[1][1] * 100 / upperNorm) < 35) {
@@ -92,10 +92,10 @@ void showOnOffs() {
     Serial.print(0);
   }
   Serial.print("\t");
+  Serial.print(readings[1][1]);
+  Serial.print("\t");
   Serial.print((readings[1][1] * 100 / upperNorm));
   Serial.print("%");
-  Serial.print("\t");
-  Serial.print(readings[1][1]);
   Serial.print("\t\t");
 
   if ((readings[1][0] * 100 / upperNorm) < 35) {
@@ -104,10 +104,10 @@ void showOnOffs() {
     Serial.print(0);
   }
   Serial.print("\t");
+  Serial.print(readings[1][0]);
+  Serial.print("\t");
   Serial.print((readings[1][0] * 100 / upperNorm));
   Serial.print("%");
-  Serial.print("\t");
-  Serial.print(readings[1][0]);
   Serial.print("\t\t");
 
   Serial.print("Light: ");
