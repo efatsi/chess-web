@@ -2,7 +2,7 @@ SYSTEM_MODE(MANUAL);
 
 #include "utils.h"
 
-const int inputPin = A0;
+const int inputPin = A6;
 
 #define ROWS 1
 #define COLUMNS 8
@@ -62,56 +62,30 @@ void display() {
 }
 
 void showOnOffs() {
-  if ((readings[0][1] * 100 / upperNorm) < 35) {
+  printOnOff(0, 0);
+  printOnOff(0, 1);
+  printOnOff(0, 2);
+  printOnOff(0, 3);
+  printOnOff(0, 4);
+  printOnOff(0, 5);
+  printOnOff(0, 6);
+  printOnOff(0, 7);
+
+  Serial.println();
+}
+
+void printOnOff(int x, int y) {
+  Serial.print(readings[x][y]);
+  Serial.print("\t");
+  Serial.print((readings[x][y] * 100 / upperNorm));
+  Serial.print("%");
+  Serial.print("\t");
+  if ((readings[x][y] * 100 / upperNorm) < 35) {
     Serial.print(1);
   } else {
     Serial.print(0);
   }
   Serial.print("\t");
-  Serial.print(readings[0][1]);
-  Serial.print("\t");
-  Serial.print((readings[0][1] * 100 / upperNorm));
-  Serial.print("%");
-  Serial.print("\t\t");
-
-  if ((readings[0][0] * 100 / upperNorm) < 35) {
-    Serial.print(1);
-  } else {
-    Serial.print(0);
-  }
-  Serial.print("\t");
-  Serial.print(readings[0][0]);
-  Serial.print("\t");
-  Serial.print((readings[0][0] * 100 / upperNorm));
-  Serial.print("%");
-  Serial.print("\t\t");
-
-  if ((readings[1][1] * 100 / upperNorm) < 35) {
-    Serial.print(1);
-  } else {
-    Serial.print(0);
-  }
-  Serial.print("\t");
-  Serial.print(readings[1][1]);
-  Serial.print("\t");
-  Serial.print((readings[1][1] * 100 / upperNorm));
-  Serial.print("%");
-  Serial.print("\t\t");
-
-  if ((readings[1][0] * 100 / upperNorm) < 35) {
-    Serial.print(1);
-  } else {
-    Serial.print(0);
-  }
-  Serial.print("\t");
-  Serial.print(readings[1][0]);
-  Serial.print("\t");
-  Serial.print((readings[1][0] * 100 / upperNorm));
-  Serial.print("%");
-  Serial.print("\t\t");
-
-  Serial.print("Light: ");
-  Serial.println(upperNorm);
 }
 
 void showPercentages() {
