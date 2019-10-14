@@ -43,7 +43,7 @@ void collectData() {
       int cleanI = j >= 4 ? COLUMNS - 1 - i : i;
 
       readings[cleanI][j] = analogRead(inputPin);
-      rawReadings[(i * COLUMNS) + j] = analogRead(inputPin);
+      rawReadings[(cleanI * COLUMNS) + j] = analogRead(inputPin);
     }
   }
 }

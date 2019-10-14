@@ -27,78 +27,78 @@ void printFullStatus() {
           case UNSTABLE_OFF:
             switch (position.occupied) {
               case WHITE:
-                Serial.println("unstable_off W  ");
+                Serial.println("U_off W  ");
                 break;
               case BLACK:
-                Serial.println("unstable_off B  ");
+                Serial.println("U_off B  ");
                 break;
               case EMPTY:
-                Serial.println("unstable_off _  ");
+                Serial.println("U_off _  ");
                 break;
             }
             break;
           case UNSTABLE_ON:
             switch (position.occupied) {
               case WHITE:
-                Serial.println("unstable_on  W  ");
+                Serial.println("U_on  W  ");
                 break;
               case BLACK:
-                Serial.println("unstable_on  B  ");
+                Serial.println("U_on  B  ");
                 break;
               case EMPTY:
-                Serial.println("unstable_on  _  ");
+                Serial.println("U_on  _  ");
                 break;
             }
             break;
           case UNSTABLE_OFF_ON:
             switch (position.occupied) {
               case WHITE:
-                Serial.println("unstable_ofn W  ");
+                Serial.println("U_ofn W  ");
                 break;
               case BLACK:
-                Serial.println("unstable_ofn B  ");
+                Serial.println("U_ofn B  ");
                 break;
               case EMPTY:
-                Serial.println("unstable_ofn _  ");
+                Serial.println("U_ofn _  ");
                 break;
             }
             break;
           case STABLE_OFF_ON:
             switch (position.occupied) {
               case WHITE:
-                Serial.println("stable_ofn   W  ");
+                Serial.println("S_ofn W  ");
                 break;
               case BLACK:
-                Serial.println("stable_ofn   B  ");
+                Serial.println("S_ofn B  ");
                 break;
               case EMPTY:
-                Serial.println("stable_ofn   _  ");
+                Serial.println("S_ofn _  ");
                 break;
             }
             break;
           case STABLE_OFF:
             switch (position.occupied) {
               case WHITE:
-                Serial.println("stable_off   W  ");
+                Serial.println("S_off W  ");
                 break;
               case BLACK:
-                Serial.println("stable_off   B  ");
+                Serial.println("S_off B  ");
                 break;
               case EMPTY:
-                Serial.println("stable_off   _  ");
+                Serial.println("S_off _  ");
                 break;
             }
             break;
           case STABLE_ON:
             switch (position.occupied) {
               case WHITE:
-                Serial.println("stable_on    W  ");
+                Serial.println("S_on  W  ");
                 break;
               case BLACK:
-                Serial.println("stable_on    B  ");
+                Serial.println("S_on  B  ");
                 break;
               case EMPTY:
-                Serial.println("stable_on    _  ");
+                Serial.println("S_on  _  ");
                 break;
             }
             break;
