@@ -4,7 +4,7 @@ SYSTEM_MODE(MANUAL);
 
 const int inputPin = A6;
 
-#define ROWS 1
+#define ROWS 8
 #define COLUMNS 8
 #define TOTAL (ROWS * COLUMNS)
 
@@ -35,12 +35,14 @@ void loop() {
 
 void collectData() {
   for (int i = 0; i < ROWS; i++) {
-    selectMasterPin(i);
+    selectSlavePin(i);
 
     for (int j = 0; j < COLUMNS; j++) {
-      selectSlavePin(j);
+      selectMasterPin(j);
 
-      readings[i][j] = analogRead(inputPin);
+      int cleanI = j >= 4 ? COLUMNS - 1 - i : i;
+
+      readings[cleanI][j] = analogRead(inputPin);
       rawReadings[(i * COLUMNS) + j] = analogRead(inputPin);
     }
   }
@@ -49,50 +51,31 @@ void collectData() {
 void calculateNorms() {
   sort(rawReadings, TOTAL);
 
-  upperNorm = (rawReadings[TOTAL - 1] + rawReadings[TOTAL - 2]) / 2;
+  int sum = 0;
+  int half = TOTAL / 2;
+  for (int i = 0; i < half; i++) {
+    sum += rawReadings[TOTAL - 1 - i];
+  }
+  upperNorm = sum / half;
 }
 
 void display() {
   if (upperNorm < 100) {
     Serial.print("\rNot enough light");
   } else {
-    // showPercentages();
-    showOnOffs();
+    printStatus();
   }
 }
 
-void showOnOffs() {
-  printOnOff(0, 0);
-  printOnOff(0, 1);
-  printOnOff(0, 2);
-  printOnOff(0, 3);
-  printOnOff(0, 4);
-  printOnOff(0, 5);
-  printOnOff(0, 6);
-  printOnOff(0, 7);
+void printStatus() {
+  for (int i = 0; i < ROWS; i++) {
+    for (int j = 0; j < COLUMNS; j++) {
+      Serial.print((readings[i][j] * 100 / upperNorm) < 35);
+      Serial.print(" ");
+    }
 
+    Serial.println();
+  }
   Serial.println();
-}
-
-void printOnOff(int x, int y) {
-  Serial.print(readings[x][y]);
-  Serial.print("\t");
-  Serial.print((readings[x][y] * 100 / upperNorm));
-  Serial.print("%");
-  Serial.print("\t");
-  if ((readings[x][y] * 100 / upperNorm) < 35) {
-    Serial.print(1);
-  } else {
-    Serial.print(0);
-  }
-  Serial.print("\t");
-}
-
-void showPercentages() {
-  for (size_t i = 0; i < TOTAL; i++) {
-    Serial.print(rawReadings[i] * 100 / upperNorm);
-    Serial.print("%\t");
-  }
-  Serial.print("Light: ");
-  Serial.println(upperNorm);
+  delay(200);
 }

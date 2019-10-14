@@ -13,7 +13,7 @@ void printStatus() {
 }
 
 
-void printStatus() {
+void printFullStatus() {
   for (int i = 0; i < 8; i++) {
     for (int j = 0; j < 8; j++) {
       int index = i + (j * 8);
@@ -107,4 +107,27 @@ void printStatus() {
     }
   }
   delay(500);
+}
+
+void showPercentages() {
+  for (size_t i = 0; i < TOTAL; i++) {
+    Serial.print(rawReadings[i] * 100 / upperNorm);
+    Serial.print("%\t");
+  }
+  Serial.print("Light: ");
+  Serial.println(upperNorm);
+}
+
+void printOnOff(int x, int y) {
+  Serial.print(readings[x][y]);
+  Serial.print("\t");
+  Serial.print((readings[x][y] * 100 / upperNorm));
+  Serial.print("%");
+  Serial.print("\t");
+  if ((readings[x][y] * 100 / upperNorm) < 35) {
+    Serial.print(1);
+  } else {
+    Serial.print(0);
+  }
+  Serial.print("\t");
 }
