@@ -70,7 +70,8 @@ void display() {
 void printStatus() {
   for (int i = 0; i < ROWS; i++) {
     for (int j = 0; j < COLUMNS; j++) {
-      Serial.print((readings[i][j] * 100 / upperNorm) < 35);
+      // Serial.print((readings[i][j] * 100 / upperNorm) < 35);
+      Serial.print(readings[i][j]);
       Serial.print(" ");
     }
 
