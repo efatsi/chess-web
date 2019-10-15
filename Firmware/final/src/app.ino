@@ -19,9 +19,6 @@ void setup() {
   Particle.function("screen", updateScreen);
   Particle.function("light", updateLight);
 
-  screen.init();
-  board.init();
-
   pinMode(ledPin, OUTPUT);
   pinMode(playerPin, INPUT);
 
@@ -32,6 +29,9 @@ void setup() {
     homePlayer = BLACK;
     awayPlayer = WHITE;
   }
+
+  board.init();
+  screen.init(homePlayer == WHITE ? "WHITE" : "BLACK");
 }
 
 void loop() {
