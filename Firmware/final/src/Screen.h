@@ -29,10 +29,6 @@ public:
       lcd->print("    " + move);
     }
 
-    void debugPrintMove(String player, String output) {
-      Serial.println(" " + player + "'s Move: " + output);
-    }
-
     void rawPrint(String output) {
       lcd->clear();
       lcd->print(output);

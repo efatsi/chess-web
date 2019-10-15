@@ -93,7 +93,7 @@ public:
 
   Board() {}
 
-  void init() {
+  void init(int homePlayer, int awayPlayer) {
     pinMode(D0, OUTPUT);
     pinMode(D1, OUTPUT);
     pinMode(D2, OUTPUT);
@@ -102,6 +102,17 @@ public:
     pinMode(D5, OUTPUT);
 
     pinMode(sensorPin, INPUT);
+
+    // set initial positions
+    for (int i = 0; i < 16; i++) {
+      Position &position = positions[i];
+      position.occupiedBy = awayPlayer;
+    }
+
+    for (int i = 48; i < 64; i++) {
+      Position &position = positions[i];
+      position.occupiedBy = homePlayer;
+    }
   }
 
   void determineState() {
@@ -117,7 +128,7 @@ public:
     if (upCount == 1 && downCount == 1) {
       if (ups[0].wasOccupiedBy == currentPlayer && downs[0].wasOccupiedBy == waitingPlayer) {
         // current captured waiting
-        moveString = ups[0].position + " - " + downs[0].position;
+        moveString = ups[0].position + " x " + downs[0].position;
         return true;
       } else if (ups[0].wasOccupiedBy == currentPlayer && downs[0].wasOccupiedBy == EMPTY) {
         // moved to empty space

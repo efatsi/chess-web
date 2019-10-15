@@ -30,7 +30,7 @@ void setup() {
     awayPlayer = WHITE;
   }
 
-  board.init();
+  board.init(homePlayer, awayPlayer);
   screen.init(homePlayer == WHITE ? "WHITE" : "BLACK");
 }
 
@@ -53,9 +53,9 @@ void confirmChanges(String move) {
   if (homePlayer == currentPlayer) {
     screen.printMove(player, move);
   } else {
-    screen.rawPrint("   satisfied");
+    screen.printMove(player, move);
+    // screen.rawPrint("   satisfied");
   }
-  screen.debugPrintMove(player, move);
 
   // Reset board
   board.confirmChanges(currentPlayer);
