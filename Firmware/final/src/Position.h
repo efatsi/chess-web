@@ -11,41 +11,52 @@ class Position {
   #define WHITE 1
   #define BLACK 2
 
-  #define CONFIRM_TIME 200
+  #define CONFIRM_TIME 500
 
   public:
     String position;
+    int    reading;
+    bool   value;
+
     int    status;
     int    occupiedBy;
-    int    value;
+
+    bool   changed;
     long   lastChange;
 
     Position(String newPosition, int newOccupiedBy) {
       position   = newPosition;
       status     = CONFIRMED;
       occupiedBy = newOccupiedBy;
-      value      = occupiedBy ? 1 : 0;
+      value      = occupiedBy ? true : false;
+      changed    = false;
       lastChange = 0;
     }
 
-    void setStatus(int newValue, int upCount, int downCount, long currentTime) {
+    void setNewValue(int newValue, long currentTime) {
+      changed    = true;
       value      = newValue;
       lastChange = currentTime;
 
-      if (newValue) {
-        if (upCount == 0 && downCount == 1) {
-          // changed their mind
-          status = CONFIRMED;
-        } else {
-          status = UNSTABLE_DOWN;
-        }
+      if (value) {
+        status = UNSTABLE_DOWN;
       } else {
-        if (occupiedBy == EMPTY) {
-          // just passing by
-          status = CONFIRMED;
-        } else {
-          status = UNSTABLE_UP;
-        }
+        status = UNSTABLE_UP;
+      }
+    }
+
+    void verifyStatus(int upCount, int downCount) {
+      if (!changed) return;
+
+      // replacing piece, revert status and changed
+      if (value && upCount == 0) {
+        status = CONFIRMED;
+        changed = false;
+      }
+
+      if (!value && occupiedBy == EMPTY) {
+        status = CONFIRMED;
+        changed = false;
       }
     }
 
@@ -67,6 +78,7 @@ class Position {
       }
 
       status = CONFIRMED;
+      changed = false;
     }
 
     bool up() {

@@ -246,7 +246,6 @@ public:
     }
 
     Serial.println();
-
     Serial.println();
   }
 
