@@ -1,4 +1,4 @@
-#include <LiquidCrystal.h>
+#include "Screen.h"
 #include "Position.h"
 #include "utils.h"
 
@@ -6,15 +6,15 @@
 #define COLUMNS 8
 #define TOTAL (ROWS * COLUMNS)
 
+Screen screen;
+
 int readings[ROWS][COLUMNS];
 int rawReadings[TOTAL];
 int upperNorm;
 
-int inputPin  = A6;
+int sensorPin = A6;
 int ledPin    = D7;
 int playerPin = D6;
-
-LiquidCrystal lcd(A0, A1, A2, A3, A4, A5);
 
 int currentPlayer = WHITE;
 int waitingPlayer = BLACK;
@@ -109,7 +109,7 @@ void setup() {
   pinMode(D4, OUTPUT);
   pinMode(D5, OUTPUT);
 
-  pinMode(inputPin, INPUT);
+  pinMode(sensorPin, INPUT);
   pinMode(ledPin, OUTPUT);
   pinMode(playerPin, INPUT);
 
@@ -120,9 +120,6 @@ void setup() {
     homePlayer = BLACK;
     awayPlayer = WHITE;
   }
-
-  lcd.begin(16, 2);
-  introSequence();
 }
 
 void loop() {
@@ -144,7 +141,7 @@ void fetchSensorData() {
 
       int cleanI = j >= 4 ? COLUMNS - 1 - i : i;
 
-      int reading = analogRead(inputPin);
+      int reading = analogRead(sensorPin);
       readings[cleanI][j] = reading;
       rawReadings[(i * COLUMNS) + j] = reading;
     }
@@ -231,29 +228,29 @@ void checkForMove() {
   }
 
   if (upCount == 1 && downCount == 1) {
-    String output;
+    String move;
     if (up[0].wasOccupiedBy == currentPlayer && down[0].wasOccupiedBy == waitingPlayer) {
       // white captured opponent
-      output = up[0].position + " - " + down[0].position;
-      confirmChanges(output);
+      move = up[0].position + " - " + down[0].position;
+      confirmChanges(move);
     } else if (up[0].wasOccupiedBy == currentPlayer && down[0].wasOccupiedBy == EMPTY) {
       // white moved to empty space
-      output = up[0].position + " - " + down[0].position;
-      confirmChanges(output);
+      move = up[0].position + " - " + down[0].position;
+      confirmChanges(move);
     } else {
       // something's wrong
     }
   }
 }
 
-void confirmChanges(String output) {
+void confirmChanges(String move) {
   if (homePlayer == currentPlayer) {
-    printOutput(output);
+    screen.printMove(move);
   } else {
-    rawPrint("   satisfied");
+    screen.rawPrint("   satisfied");
   }
 
-  debugPrintOutput(output);
+  screen.debugPrintMove(move);
 
   for (int i = 0; i < TOTAL; i++) {
     Position &position = positions[i];
@@ -380,33 +377,7 @@ void printUpdDownStatus() {
   delay(200);
 }
 
-// Visuals
-void introSequence() {
-  lcd.print("   Yay Chess!");
-  lcd.setCursor(0, 1);
-  lcd.print("       - fat$$");
-
-  delay(2000);
-
-  lcd.setCursor(0, 0);
-  for (int i = 0; i < 32; i++) {
-    if (i == 16) lcd.setCursor(0, 1);
-
-    lcd.print(" ");
-    if (!(i >= 16 && i < 23)) delay(100);
-  }
-}
-
-int updateScreen(String player) {
-  lcd.clear();
-
-  lcd.print(" " + player + "'s Move:");
-  lcd.setCursor(0, 1);
-  lcd.print("    C2 - C4");
-
-  return 1;
-}
-
+// Particle Functions
 int updateLight(String command) {
   if (command == "on") {
     digitalWrite(ledPin, HIGH);
@@ -417,22 +388,7 @@ int updateLight(String command) {
   return 1;
 }
 
-void printOutput(String output) {
-  lcd.clear();
-
-  String player = currentPlayer == WHITE ? "White" : "Black";
-
-  lcd.print(" " + player + "'s Move:");
-  lcd.setCursor(0, 1);
-  lcd.print("    " + output);
-}
-
-void debugPrintOutput(String output) {
-  String player = currentPlayer == WHITE ? "White" : "Black";
-  Serial.println(" " + player + "'s Move: " + output);
-}
-
-void rawPrint(String output) {
-  lcd.clear();
-  lcd.print(output);
+int updateScreen(String player) {
+  screen.printPlayerMove(player);
+  return 1;
 }
