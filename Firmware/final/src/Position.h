@@ -11,90 +11,99 @@ class Position {
   #define WHITE 1
   #define BLACK 2
 
-  #define CONFIRM_TIME 500
+  #define CONFIRM_TIME 5000
 
-  public:
-    String position;
-    int    reading;
-    bool   value;
+public:
+  String position;
+  int    reading;
+  bool   value;
 
-    int    status;
-    int    occupiedBy;
+  int    status;
+  int    occupiedBy;
 
-    bool   changed;
-    long   lastChange;
+  bool   changed;
+  long   lastChange;
 
-    Position(String newPosition, int newOccupiedBy) {
-      position   = newPosition;
-      status     = CONFIRMED;
-      occupiedBy = newOccupiedBy;
-      value      = occupiedBy ? true : false;
-      changed    = false;
-      lastChange = 0;
-    }
+  Position(String newPosition, int newOccupiedBy) {
+    position   = newPosition;
+    status     = CONFIRMED;
+    occupiedBy = newOccupiedBy;
+    value      = occupiedBy ? true : false;
+    changed    = false;
+    lastChange = 0;
+  }
 
-    void setNewValue(int newValue, long currentTime) {
+  void setNewValue(int newValue, long currentTime) {
+    value = newValue;
+
+    if (value && !_downStatus()) {
       changed    = true;
-      value      = newValue;
       lastChange = currentTime;
-
-      if (value) {
-        status = UNSTABLE_DOWN;
-      } else {
-        status = UNSTABLE_UP;
-      }
+      status     = UNSTABLE_DOWN;
+    } else if (!value && !_upStatus()) {
+      changed    = true;
+      lastChange = currentTime;
+      status     = UNSTABLE_UP;
     }
+  }
 
-    void verifyStatus(int upCount, int downCount) {
-      if (!changed) return;
+  void verifyStatus(int upCount, int downCount, int currentPlayer) {
+    if (!changed) return;
 
-      // replacing piece, revert status and changed
-      if (value && upCount == 0) {
-        status = CONFIRMED;
-        changed = false;
-      }
-
-      if (!value && occupiedBy == EMPTY) {
+    if (value) {
+      // replacing piece
+      if (upCount == 0 || occupiedBy == currentPlayer) {
         status = CONFIRMED;
         changed = false;
       }
     }
 
-    void checkStability(long currentTime) {
-      if (_unstable() && _changeIsOld(currentTime)) {
-        if (status == UNSTABLE_UP) {
-          status = STABLE_UP;
-        } else if (status == UNSTABLE_DOWN) {
-          status = STABLE_DOWN;
-        }
-      }
-    }
-
-    void confirmState(int player) {
-      if (status == STABLE_UP) {
-        occupiedBy = EMPTY;
-      } else if (status == STABLE_DOWN) {
-        occupiedBy = player;
-      }
-
+    // just passing by
+    if (!value && occupiedBy == EMPTY) {
       status = CONFIRMED;
       changed = false;
     }
+  }
 
-    bool up() {
-      return status == UNSTABLE_UP || status == STABLE_UP;
+  void checkStability(long currentTime) {
+    if (_unstable() && _changeIsOld(currentTime)) {
+      if (status == UNSTABLE_UP) {
+        status = STABLE_UP;
+      } else if (status == UNSTABLE_DOWN) {
+        status = STABLE_DOWN;
+      }
+    }
+  }
+
+  void confirmState(int player) {
+    if (status == STABLE_UP) {
+      occupiedBy = EMPTY;
+    } else if (status == STABLE_DOWN) {
+      occupiedBy = player;
     }
 
-    bool down() {
-      return status == UNSTABLE_DOWN || status == STABLE_DOWN;
-    }
+    status = CONFIRMED;
+    changed = false;
+  }
 
-  private:
-    bool _unstable() {
-      return status == UNSTABLE_UP || status == UNSTABLE_DOWN;
-    }
+  bool startValue() {
+    return occupiedBy != EMPTY;
+  }
 
-    bool _changeIsOld(long currentTime) {
-      return currentTime - lastChange > CONFIRM_TIME;
-    }
+private:
+  bool _unstable() {
+    return status == UNSTABLE_UP || status == UNSTABLE_DOWN;
+  }
+
+  bool _changeIsOld(long currentTime) {
+    return currentTime - lastChange > CONFIRM_TIME;
+  }
+
+  bool _downStatus() {
+    return status == UNSTABLE_DOWN || status == STABLE_DOWN;
+  }
+
+  bool _upStatus() {
+    return status == UNSTABLE_UP || status == STABLE_UP;
+  }
 };

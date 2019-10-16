@@ -35,9 +35,9 @@ void setup() {
 }
 
 void loop() {
-  board.determineState();
+  board.determineState(currentPlayer);
 
-  if (board.moveDetected(currentPlayer, waitingPlayer)) {
+  if (board.moveDetected()) {
     confirmChanges(board.moveString);
   }
 
@@ -77,6 +77,7 @@ int updateLight(String command) {
 }
 
 int updateScreen(String player) {
+  // TODO: split on deliminator
   screen.printPlayerMove(player);
   return 1;
 }

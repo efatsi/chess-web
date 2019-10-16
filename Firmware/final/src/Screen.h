@@ -18,7 +18,7 @@ public:
 
       lcd->print(" " + player + "'s Move:");
       lcd->setCursor(0, 1);
-      lcd->print("    C2 - C4");
+      lcd->print("    TODO...");
     }
 
     void printMove(String player, String move) {

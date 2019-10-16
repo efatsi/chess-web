@@ -81,11 +81,17 @@ public:
   const int slavePins[3]  = {D3, D4, D5};
   const int sensorPin = A6;
 
+  int currentPlayer;
+
   int allReadings[64];
   int upperNorm;
+  const int lowPercentage = 15;
 
-  int downCount = 0;
-  int upCount   = 0;
+  int stableDownCount = 0;
+  int stableUpCount   = 0;
+  int allUpCount      = 0;
+  int allDownCount    = 0;
+  int unstableCount   = 0;
   ChangedPosition ups[5];
   ChangedPosition downs[5];
 
@@ -115,7 +121,9 @@ public:
     }
   }
 
-  void determineState() {
+  void determineState(int cp) {
+    currentPlayer = cp;
+
     _fetchSensorData();
     _calculateNorm();
     _setStatuses();
@@ -124,8 +132,11 @@ public:
     _verifyStatuses();
   }
 
-  bool moveDetected(int currentPlayer, int waitingPlayer) {
-    if (upCount == 1 && downCount == 1) {
+  bool moveDetected() {
+    if (unstableCount > 0) return false;
+
+    int waitingPlayer = WHITE + BLACK - currentPlayer;
+    if (stableUpCount == 1 && stableDownCount == 1) {
       if (ups[0].wasOccupiedBy == currentPlayer && downs[0].wasOccupiedBy == waitingPlayer) {
         // current captured waiting
         moveString = ups[0].position + " x " + downs[0].position;
@@ -135,7 +146,7 @@ public:
         moveString = ups[0].position + " - " + downs[0].position;
         return true;
       } else {
-        // en pessant / castle / orrr something's not right
+        // TODO: en pessant / castle / orrr something's not right
       }
     }
 
@@ -156,9 +167,8 @@ public:
         Position &position = positions[index];
 
         Serial.print(position.reading);
-        Serial.print(" ");
+        Serial.print("\t");
       }
-
       Serial.println();
     }
     Serial.println();
@@ -298,31 +308,40 @@ private:
 
     for (int i = 0; i < 64; i++) {
       Position &position = positions[i];
-      bool newValue = (position.reading * 100 / upperNorm) < 35;
+      bool newValue = (position.reading * 100 / upperNorm) < lowPercentage;
 
-      if (newValue != position.value) {
+      if (newValue != position.startValue() || newValue != position.value) {
         position.setNewValue(newValue, currentTime);
-      } else {
-        position.checkStability(currentTime);
       }
+
+      position.checkStability(currentTime);
     }
   }
 
   void _countUpsAndDowns() {
-    upCount   = 0;
-    downCount = 0;
+    stableUpCount   = 0;
+    allUpCount      = 0;
+    stableDownCount = 0;
+    allDownCount    = 0;
+    unstableCount   = 0;
 
     for (int i = 0; i < 64; i++) {
       Position &position = positions[i];
 
       if (position.status == STABLE_UP) {
-        ups[upCount] = ChangedPosition(position.position, position.occupiedBy);
-        upCount += 1;
-      }
-
-      if (position.status == STABLE_DOWN) {
-        downs[downCount] = ChangedPosition(position.position, position.occupiedBy);
-        downCount += 1;
+        ups[stableUpCount] = ChangedPosition(position.position, position.occupiedBy);
+        stableUpCount += 1;
+        allUpCount += 1;
+      } else if (position.status == UNSTABLE_UP) {
+        unstableCount += 1;
+        allUpCount += 1;
+      } else if (position.status == STABLE_DOWN) {
+        downs[stableDownCount] = ChangedPosition(position.position, position.occupiedBy);
+        stableDownCount += 1;
+        allDownCount += 1;
+      } else if (position.status == UNSTABLE_DOWN) {
+        unstableCount += 1;
+        allDownCount += 1;
       }
     }
   }
@@ -330,7 +349,7 @@ private:
   void _verifyStatuses() {
     for (int i = 0; i < 64; i++) {
       Position &position = positions[i];
-      position.verifyStatus(upCount, downCount);
+      position.verifyStatus(allUpCount, allDownCount, currentPlayer);
     }
   }
 
