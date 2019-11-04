@@ -328,6 +328,10 @@ private:
     for (int i = 0; i < 64; i++) {
       Position &position = positions[i];
 
+      if (stableUpCount >= 5 || stableDownCount >= 5) {
+        return;
+      }
+
       if (position.status == STABLE_UP) {
         ups[stableUpCount] = ChangedPosition(position.position, position.occupiedBy);
         stableUpCount += 1;
