@@ -1,16 +1,3 @@
-require_relative 'display.rb'
-require_relative 'piece.rb'
-require_relative 'pawn'
-require_relative 'sliding'
-require_relative 'stepping'
-require_relative 'rook'
-require_relative 'bishop'
-require_relative 'knight'
-require_relative 'king'
-require_relative 'queen'
-
-# require 'byebug'
-
 class Board
 
   attr_accessor :grid, :message

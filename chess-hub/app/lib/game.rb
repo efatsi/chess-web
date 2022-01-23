@@ -1,9 +1,6 @@
-require_relative 'board'
-require_relative 'display'
-# require 'byebug'
-
-
 class Game
+
+  attr_reader :board
 
   def initialize
     @board = Board.new
@@ -31,9 +28,4 @@ class Game
     end
     puts @board.message
   end
-
 end
-
-
-g = Game.new
-g.play

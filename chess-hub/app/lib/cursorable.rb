@@ -1,5 +1,3 @@
-require "io/console"
-
 module Cursorable
   KEYMAP = {
     " " => :space,

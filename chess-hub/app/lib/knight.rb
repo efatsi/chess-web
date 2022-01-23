@@ -1,4 +1,3 @@
-
 class Knight < Stepping
 
   def to_s

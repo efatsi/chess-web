@@ -1,6 +1,3 @@
-
-require_relative 'piece.rb'
-
 class Sliding < Piece
 
   def possible_moves(*directions)
@@ -30,7 +27,5 @@ class Sliding < Piece
     end
     possible_moves
   end
-
-
 
 end

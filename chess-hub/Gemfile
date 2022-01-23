@@ -13,6 +13,8 @@ gem "stimulus-rails"
 gem "redis", "~> 4.0"
 gem "bootsnap", require: false
 
+gem "colorize"
+
 group :development, :test do
   gem "pry-rails"
 end

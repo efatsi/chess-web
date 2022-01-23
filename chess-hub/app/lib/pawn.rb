@@ -1,9 +1,6 @@
-require_relative 'piece.rb'
-
 class Pawn < Piece
 
   def possible_moves
-
     move_arr = []
     row, col = @pos
     start_row = false
