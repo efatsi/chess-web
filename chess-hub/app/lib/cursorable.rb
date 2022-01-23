@@ -37,7 +37,7 @@ module Cursorable
   def handle_key(key)
     case key
     when :ctrl_c
-      exit 0
+      raise "STOP"
     when :return, :space
       @cursor_pos
     when :left, :right, :up, :down

@@ -1,5 +1,4 @@
-class Game
-
+class ChessGame
   attr_reader :board
 
   def initialize
