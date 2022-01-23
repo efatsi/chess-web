@@ -9,8 +9,44 @@ class Piece
     @pos = pos
   end
 
+  def self.from_key(key, grid, pos)
+    return if key == "--"
+
+    color = case key[0]
+    when "w"
+      :white
+    when "b"
+      :black
+    else
+      raise "Unreadable color from key: #{key}"
+    end
+
+    klass = case key[1]
+    when "K"
+      King
+    when "Q"
+      Queen
+    when "R"
+      Rook
+    when "N"
+      Knight
+    when "B"
+      Bishop
+    when "P"
+      Pawn
+    else
+      raise "Unreadable klass from key: #{key}"
+    end
+
+    klass.new(color, grid, pos)
+  end
+
   def to_state
     "#{@color.to_s.first}#{piece_key}"
+  end
+
+  def inspect
+    to_state
   end
 
   def opposite_color
@@ -36,24 +72,4 @@ class Piece
     return true if x.between?(0, 7) && y.between?(0, 7)
     false
   end
-
-  def dup(grid)
-    piece_class = self.class
-
-    if piece_class == Pawn
-      duped = Pawn.new(@color, grid, @pos)
-    elsif piece_class == Rook
-      duped = Rook.new(@color, grid, @pos)
-    elsif piece_class == Bishop
-      duped = Bishop.new(@color, grid, @pos)
-    elsif piece_class == Knight
-      duped = Knight.new(@color, grid, @pos)
-    elsif piece_class == Queen
-      duped = Queen.new(@color, grid, @pos)
-    elsif piece_class == King
-      duped = King.new(@color, grid, @pos)
-    end
-    duped
-  end
-
 end

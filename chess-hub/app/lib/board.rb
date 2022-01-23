@@ -2,11 +2,13 @@ class Board
 
   attr_accessor :grid, :message
 
-  def initialize(populate = true)
+  def initialize(populate: true, board_state: nil)
     @grid = Array.new(8) {Array.new(8)}
     @message = nil
     @over = false
+
     populate_grid if populate
+    load_from_state(board_state) if board_state
   end
 
   def populate_grid
@@ -46,6 +48,15 @@ class Board
     end
 
     state_string
+  end
+
+  def load_from_state(board_state)
+    rows = board_state.split("\n")
+    rows.each_with_index do |row, i|
+      row.split(",").each_with_index do |key, j|
+        @grid[i][j] = Piece.from_key(key, @grid, [i,j])
+      end
+    end
   end
 
   def king_castling_moves(piece)
@@ -121,17 +132,7 @@ class Board
   end
 
   def dup
-    dup_board = Board.new(false)
-    @grid.each_index do |row|
-      @grid[row].each_with_index do |piece, col|
-        if piece.nil?
-          dup_board.grid[row][col] = nil
-        else
-          dup_board.grid[row][col] = piece.dup(dup_board.grid)
-        end
-      end
-    end
-    dup_board
+    dup_board = Board.new(populate: false, board_state: to_state)
   end
 
   def move!(start_pos, end_pos)
