@@ -41,9 +41,9 @@ void loop() {
     confirmChanges(board.moveString);
   }
 
-  // board.printBinary();
+  board.printBinary();
   // board.printReadings();
-  board.printFullStatus();
+  // board.printFullStatus();
   delay(50);
 }
 
@@ -77,7 +77,8 @@ int updateLight(String command) {
 }
 
 int updateScreen(String player) {
-  // TODO: split on deliminator
-  screen.printPlayerMove(player);
+  // TODO: split on deliminator to split player and move
+  String move = "g4 - h4"
+  screen.printPlayerMove(player, move);
   return 1;
 }
