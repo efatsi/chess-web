@@ -9,6 +9,10 @@ class Piece
     @pos = pos
   end
 
+  def to_state
+    "#{@color.to_s.first}#{piece_key}"
+  end
+
   def opposite_color
     @color == :black ? :white : :black
   end

@@ -1,5 +1,9 @@
 class Pawn < Piece
 
+  def piece_key
+    "P"
+  end
+
   def possible_moves
     move_arr = []
     row, col = @pos

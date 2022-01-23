@@ -8,4 +8,8 @@ class Queen < Sliding
     " ♛ "
   end
 
+  def piece_key
+    "Q"
+  end
+
 end

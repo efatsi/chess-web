@@ -16,4 +16,8 @@ class Rook < Sliding
     " ♜ "
   end
 
+  def piece_key
+    "R"
+  end
+
 end

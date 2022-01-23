@@ -1,14 +1,14 @@
 $(document).ready(function() {
   var opts = {
     position: {
-      c7: 'wP',
-      d7: 'wP',
-      e7: 'wP',
-      f7: 'wP',
-      g7: 'wN',
+      c7: 'wB',
+      d7: 'wK',
+      e7: 'wN',
+      f7: 'wR',
+      g7: 'wP',
       a3: 'bB',
       c3: 'bP',
-      d3: 'bP',
+      d3: 'bQ',
       e3: 'bP',
       f3: 'bP',
       g3: 'bN',

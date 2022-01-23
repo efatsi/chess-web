@@ -9,4 +9,7 @@ class Bishop < Sliding
     " ♝ "
   end
 
+  def piece_key
+    "B"
+  end
 end

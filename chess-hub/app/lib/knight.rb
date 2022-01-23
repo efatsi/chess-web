@@ -8,4 +8,7 @@ class Knight < Stepping
     super(:knight)
   end
 
+  def piece_key
+    "N"
+  end
 end

@@ -10,7 +10,7 @@ class Board
   end
 
   def populate_grid
-    @grid.each_index do |i|
+    8.times do |i|
       if i == 0 || i == 7
         @grid[0][i] = Rook.new(:black, @grid, [0,i])
         @grid[7][i] = Rook.new(:white, @grid, [7,i])
@@ -28,10 +28,24 @@ class Board
         @grid[7][i] = King.new(:white, @grid, [7,i])
       end
     end
-    @grid[1].each_index do |i|
+
+    8.times do |i|
       @grid[1][i] = Pawn.new(:black, @grid, [1,i])
       @grid[6][i] = Pawn.new(:white, @grid, [6,i])
     end
+  end
+
+  def to_state
+    state_string = ""
+    8.times do |i|
+      8.times do |j|
+        state_string += @grid[i][j].try(:to_state) || "--"
+        state_string += ","
+      end
+      state_string += "\n"
+    end
+
+    state_string
   end
 
   def king_castling_moves(piece)

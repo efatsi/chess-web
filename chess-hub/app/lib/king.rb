@@ -11,6 +11,10 @@ class King < Stepping
     " ♚ "
   end
 
+  def piece_key
+    "K"
+  end
+
   def possible_moves
     super(:king)
   end
