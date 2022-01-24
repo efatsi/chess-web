@@ -1,0 +1,24 @@
+<%= content_for :head_extra do %>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+  <script src="/js/chessboard.js"></script>
+  <link rel="stylesheet" type="text/css" href="/css/chessboard.css">
+<% end %>
+
+<h1 style="text-align: center; padding-bottom: 30px;">Game: <%= @game.id %></h1>
+<div id="board" style="width: 500px; margin: 0 auto;"></div>
+
+<!-- <script src="/js/game.js"></script> -->
+<script>
+  $(document).ready(function() {
+    positions = JSON.parse('<%== @game.board.to_js_state.to_json %>')
+    console.log("positions", positions)
+
+    var opts = {
+      position: positions,
+      draggable: true
+    };
+    var board = ChessBoard('board', opts);
+
+    // example move: board.move("a2-a8")
+  })
+</script>

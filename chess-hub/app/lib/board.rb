@@ -41,7 +41,7 @@ class Board
     state_string = ""
     8.times do |i|
       8.times do |j|
-        state_string += @grid[i][j].try(:to_state) || "--"
+        state_string += @grid[i][j].try(:to_key) || "--"
         state_string += ","
       end
       state_string += "\n"
@@ -57,6 +57,20 @@ class Board
         @grid[i][j] = Piece.from_key(key, @grid, [i,j])
       end
     end
+  end
+
+  def to_js_state
+    positions = {}
+
+    8.times do |i|
+      8.times do |j|
+        if piece = @grid[i][j]
+          positions[piece.position] = piece.to_key
+        end
+      end
+    end
+
+    positions
   end
 
   def king_castling_moves(piece)
@@ -189,6 +203,4 @@ class Board
   def over?
     @over
   end
-
-
 end

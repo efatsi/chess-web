@@ -9,6 +9,10 @@ class Piece
     @pos = pos
   end
 
+  def to_key
+    "#{@color.to_s.first}#{piece_key}"
+  end
+
   def self.from_key(key, grid, pos)
     return if key == "--"
 
@@ -41,12 +45,8 @@ class Piece
     klass.new(color, grid, pos)
   end
 
-  def to_state
-    "#{@color.to_s.first}#{piece_key}"
-  end
-
   def inspect
-    to_state
+    to_key
   end
 
   def opposite_color
@@ -71,5 +71,15 @@ class Piece
     x, y = move
     return true if x.between?(0, 7) && y.between?(0, 7)
     false
+  end
+
+  def position
+    # 0,0 == a8
+    # 7,0 == a1
+
+    col = "abcdefgh"[pos[1]]
+    row = 8 - pos[0]
+
+    "#{col}#{row}"
   end
 end
