@@ -20,6 +20,7 @@ class Game < ApplicationRecord
         board_state:    board.to_state,
         current_player: current_player == :white ? :black : :white
       })
+      ActionCable.server.broadcast("game_#{id}", { move: instruction.gsub("x", "-") })
 
       return { success: true }
 

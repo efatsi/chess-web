@@ -12,7 +12,7 @@ class GamesController < ApplicationController
   def move
     game = Game.find(params[:game_id])
 
-    # example move: a2-a8
+    # example moves: a2-a8, d3xd4
     move = game.process_move(params[:move])
     render json: move
 

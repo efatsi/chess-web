@@ -5,20 +5,10 @@
 <% end %>
 
 <h1 style="text-align: center; padding-bottom: 30px;">Game: <%= @game.id %></h1>
-<div id="board" style="width: 500px; margin: 0 auto;"></div>
-
-<!-- <script src="/js/game.js"></script> -->
-<script>
-  $(document).ready(function() {
-    positions = JSON.parse('<%== @game.board.to_js_state.to_json %>')
-    console.log("positions", positions)
-
-    var opts = {
-      position: positions,
-      draggable: true
-    };
-    var board = ChessBoard('board', opts);
-
-    // example move: board.move("a2-a8")
-  })
-</script>
+<div
+  id="board"
+  data-controller="board"
+  data-board-state-value='<%== @game.board.to_js_state.to_json %>'
+  data-board-id-value='<%= @game.id %>'
+  style="width: 500px; margin: 0 auto;">
+</div>
