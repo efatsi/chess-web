@@ -4,7 +4,7 @@ class Sliding < Piece
     possible_moves = []
     dir_array = []
     directions.each do |dir|
-      if dir == :diagonal # TODO refractor to Rook, Bishop, Queen classes
+      if dir == :diagonal # todo refractor to Rook, Bishop, Queen classes
         dir_array += [[1,1],[1,-1], [-1, 1],[-1,-1]]
       elsif dir == :straight
         dir_array += [[1,0], [0,1], [-1, 0], [0,-1]]

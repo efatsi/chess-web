@@ -1,4 +1,5 @@
 class Board
+  class InvalidMoveError < StandardError; end
 
   attr_accessor :grid, :message
 
@@ -82,12 +83,24 @@ class Board
     castling_moves
   end
 
+  def attempt_move(instruction, color)
+    start_pos, end_pos = instruction.split(/[-x]/)
+    start_coords = Translator.position_to_coordinates(start_pos)
+    end_coords   = Translator.position_to_coordinates(end_pos)
+
+    move(start_coords, end_coords, color)
+  end
+
   def move(start, end_pos, color)
     start_row, start_col = start
     moving_piece = @grid[start_row][start_col]
 
-    if moving_piece.nil? || moving_piece.color != color
-      raise ArgumentError
+    if moving_piece.nil?
+      raise InvalidMoveError.new("can't move something that isn't there.")
+    end
+
+    if moving_piece.color != color
+      raise InvalidMoveError.new("it is #{color}'s turn, can't move #{moving_piece.color}'s piece.")
     end
 
     if check?(moving_piece.color)
@@ -102,13 +115,13 @@ class Board
       possible_moves += king_castling_moves(moving_piece)
     end
 
-    raise ArgumentError unless possible_moves.include?(end_pos)
+    raise InvalidMoveError.new("that piece isn't allowed to move there") unless possible_moves.include?(end_pos)
 
     end_row, end_col = end_pos
     if moved_into_check?(moving_piece, end_pos)
       puts "Cannot move into check."
       sleep(1)
-     raise ArgumentError.new
+      raise InvalidMoveError.new("Cannot move into check")
     end
 
     if moving_piece.is_a?(King) && king_castling_moves(moving_piece).include?(end_pos)
@@ -136,7 +149,6 @@ class Board
     elsif moving_piece.is_a?(Rook) || moving_piece.is_a?(King)
       moving_piece.castleable = false if moving_piece.castleable
     end
-
   end
 
   def moved_into_check?(moving_piece, end_pos)

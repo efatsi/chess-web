@@ -74,12 +74,6 @@ class Piece
   end
 
   def position
-    # 0,0 == a8
-    # 7,0 == a1
-
-    col = "abcdefgh"[pos[1]]
-    row = 8 - pos[0]
-
-    "#{col}#{row}"
+    Translator.coordinates_to_position(pos)
   end
 end
