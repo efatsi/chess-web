@@ -1,5 +1,6 @@
 import { Controller } from "@hotwired/stimulus"
 import consumer from "../channels/consumer"
+import Chessboard from "../lib/chessboard"
 
 export default class extends Controller {
   static values = {
@@ -12,9 +13,9 @@ export default class extends Controller {
 
     const opts = {
       position: positions,
-      draggable: true
+      draggable: true,
     };
-    const board = ChessBoard('board', opts);
+    const board = Chessboard('board', opts);
 
     this.gameChannel = consumer.subscriptions.create({channel: "GameChannel", id: this.idValue}, {
       received(data) {
