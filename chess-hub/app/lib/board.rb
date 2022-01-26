@@ -1,41 +1,15 @@
 class Board
   class InvalidMoveError < StandardError; end
+  INITIAL_FEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR"
 
   attr_accessor :grid, :message
 
-  def initialize(populate: true, board_state: nil)
+  def initialize(fen: INITIAL_FEN)
     @grid = Array.new(8) {Array.new(8)}
     @message = nil
     @over = false
 
-    populate_grid if populate
-    load_from_state(board_state) if board_state
-  end
-
-  def populate_grid
-    8.times do |i|
-      if i == 0 || i == 7
-        @grid[0][i] = Rook.new(:black, @grid, [0,i])
-        @grid[7][i] = Rook.new(:white, @grid, [7,i])
-      elsif i == 1 || i == 6
-        @grid[0][i] = Knight.new(:black, @grid, [0,i])
-        @grid[7][i] = Knight.new(:white, @grid, [7,i])
-      elsif i == 2 || i == 5
-        @grid[0][i] = Bishop.new(:black, @grid, [0,i])
-        @grid[7][i] = Bishop.new(:white, @grid, [7,i])
-      elsif i == 3
-        @grid[0][i] = Queen.new(:black, @grid, [0,i])
-        @grid[7][i] = Queen.new(:white, @grid, [7,i])
-      else
-        @grid[0][i] = King.new(:black, @grid, [0,i])
-        @grid[7][i] = King.new(:white, @grid, [7,i])
-      end
-    end
-
-    8.times do |i|
-      @grid[1][i] = Pawn.new(:black, @grid, [1,i])
-      @grid[6][i] = Pawn.new(:white, @grid, [6,i])
-    end
+    load_from_fen(fen)
   end
 
   def to_fen
@@ -75,28 +49,6 @@ class Board
       else
         @grid[i][j] = Piece.from_fen(char, @grid, [i,j])
         j += 1
-      end
-    end
-  end
-
-  def to_state
-    state_string = ""
-    8.times do |i|
-      8.times do |j|
-        state_string += @grid[i][j].try(:to_key) || "--"
-        state_string += ","
-      end
-      state_string += "\n"
-    end
-
-    state_string
-  end
-
-  def load_from_state(board_state)
-    rows = board_state.split("\n")
-    rows.each_with_index do |row, i|
-      row.split(",").each_with_index do |key, j|
-        @grid[i][j] = Piece.from_key(key, @grid, [i,j])
       end
     end
   end
@@ -199,7 +151,7 @@ class Board
   end
 
   def dup
-    dup_board = Board.new(populate: false, board_state: to_state)
+    dup_board = Board.new(fen: to_fen)
   end
 
   def move!(start_pos, end_pos)
