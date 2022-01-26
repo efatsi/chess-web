@@ -62,18 +62,36 @@ class Board
     end
   end
 
-  def to_js_state
-    positions = {}
+  def valid_move_to_get_to(new_fen)
+    future_grid = Board.new(fen: new_fen).grid
+    current_grid = self.grid
+
+    from_position = nil
+    to_position = nil
+    capturing = false
 
     8.times do |i|
       8.times do |j|
-        if piece = @grid[i][j]
-          positions[piece.position] = piece.to_key
+        if current_grid[i][j].try(:to_key) != future_grid[i][j].try(:to_key)
+          if future_grid[i][j].nil?
+            return false if from_position.present? # TODO: allow castle
+            from_position = Translator.coordinates_to_position([i,j])
+          else
+            return false if to_position.present? # TODO: allow castle
+            capturing = current_grid[i][j].present?
+            to_position = Translator.coordinates_to_position([i,j])
+          end
         end
       end
     end
 
-    positions
+    if from_position.present? && to_position.present?
+      if capturing
+        return "#{from_position}x#{to_position}"
+      else
+        return "#{from_position}-#{to_position}"
+      end
+    end
   end
 
   def king_castling_moves(piece)
