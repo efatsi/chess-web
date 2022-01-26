@@ -38,7 +38,7 @@ export default class extends Controller {
     console.log("RECEIVED WEBSOCKET:", data.move)
 
     this.fenValue = data.fen
-    this.board.move(data.move)
+    this.board.position(data.fen)
     this.appendMove(data)
   }
 
