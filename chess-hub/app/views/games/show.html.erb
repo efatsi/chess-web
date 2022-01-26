@@ -9,16 +9,22 @@
   data-controller="game"
   data-game-fen-value="<%= @game.board.to_fen %>"
   data-game-id-value="<%= @game.id %>"
-  style="display: flex; flex-direction: row;"
+  style="display: flex; flex-direction: row; justify-content: center;"
 >
   <div id="moves">
-    <h3>Moves</h3>
-    <ul data-game-target="moves">
+    <h3 style="margin: 0 0 0 20px">Moves</h3>
+    <ul data-game-target="moves" style="
+      height: 462px;
+      overflow: scroll;
+      width: 150px;
+      margin-bottom: 0;
+      margin-right: 20px;
+    ">
       <li data-game-target="move" data-fen="<%= Board::INITIAL_FEN %>">--</li>
       <% @game.moves.each_with_index do |move, i| %>
         <li data-game-target="move" data-fen="<%= @game.fens[i + 1] %>"><%= move %></li>
       <% end %>
     </ul>
   </div>
-  <div id="board" style="width: 500px; margin: 0 auto;"></div>
+  <div id="board" style="width: 500px;"></div>
 </div>

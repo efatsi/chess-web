@@ -67,6 +67,9 @@ export default class extends Controller {
         this.board.position(this.fenValue)
       }, 10)
     }
+
+    const el = this.movesTarget
+    el.scrollTop = el.scrollHeight - el.clientHeight
   }
 }
 
