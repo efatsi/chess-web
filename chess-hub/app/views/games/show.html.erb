@@ -26,7 +26,13 @@
       <% end %>
     </ul>
   </div>
-  <div id="board" style="width: 500px;"></div>
+  <div style="width: 500px;">
+    <div id="board"></div>
+    <br>
+    <div data-game-target="message" style="text-align: center">
+      <%= @game.current_message %>
+    </div>
+  </div>
 
   <div id="actions" style="margin-left: 20px;">
     <button data-action="click->game#submit" data-url="<%= game_update_path(@game, force: false) %>">Submit Move</button>

@@ -3,7 +3,7 @@ import consumer from "../channels/consumer"
 import ChessBoard from "../lib/chessboard"
 
 export default class extends Controller {
-  static targets = ["moves", "move"]
+  static targets = ["moves", "move", "message"]
 
   static values = {
     fen: String,
@@ -11,9 +11,9 @@ export default class extends Controller {
   }
 
   connect() {
-    const _this = this
     this.board = this.initializeBoard()
 
+    const _this = this
     this.gameChannel = consumer.subscriptions.create({channel: "GameChannel", id: this.idValue}, {
       received(data) {
         _this.handleNewMove(data)
@@ -31,6 +31,7 @@ export default class extends Controller {
     const response = await fetch(url, {method: "POST"})
     response.json().then(data => {
       if (!data.success) {
+        console.log("Invalid move:", data.message)
         this.board.position(this.fenValue)
       }
     })
@@ -46,11 +47,12 @@ export default class extends Controller {
   }
 
   handleNewMove(data) {
-    console.log("RECEIVED WEBSOCKET:", data.move)
+    console.log("websocket:", data)
 
     this.fenValue = data.fen
     this.board.position(data.fen)
     this.appendMove(data)
+    this.messageTarget.innerText = data.message
   }
 
   appendMove(data) {

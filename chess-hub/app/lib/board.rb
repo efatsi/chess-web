@@ -117,11 +117,11 @@ class Board
     moving_piece = @grid[start_row][start_col]
 
     if moving_piece.nil?
-      raise InvalidMoveError.new("can't move something that isn't there.")
+      raise InvalidMoveError.new("Can't move something that isn't there.")
     end
 
     if moving_piece.color != color
-      raise InvalidMoveError.new("it is #{color}'s turn, can't move #{moving_piece.color}'s piece.")
+      raise InvalidMoveError.new("It is #{color}'s turn, can't move #{moving_piece.color}'s piece.")
     end
 
     if check?(moving_piece.color)
@@ -136,7 +136,7 @@ class Board
       possible_moves += king_castling_moves(moving_piece)
     end
 
-    raise InvalidMoveError.new("that piece isn't allowed to move there") unless possible_moves.include?(end_pos)
+    raise InvalidMoveError.new("That piece isn't allowed to move there") unless possible_moves.include?(end_pos)
 
     end_row, end_col = end_pos
     if moved_into_check?(moving_piece, end_pos)
@@ -159,8 +159,10 @@ class Board
     if check?(moving_piece.opposite_color)
       @message = "#{moving_piece.opposite_color} is in check!"
       if checkmate?(moving_piece.opposite_color)
-        @message = "#{moving_piece.opposite_color} is in checkmate! Game over."
+        @message = "Checkmate! #{moving_piece.color} wins."
       end
+    else
+      @message = "Next up: #{moving_piece.opposite_color}"
     end
 
     if moving_piece.is_a?(Pawn) && moving_piece.promotion?
@@ -233,5 +235,16 @@ class Board
 
   def over?
     @over
+  end
+
+  def current_message(current_player, other_player)
+    if check?(current_player)
+      @message = "#{current_player} is in check!"
+      if checkmate?(current_player)
+        @message = "Checkmate! #{other_player} wins."
+      end
+    else
+      @message = "Next up: #{current_player}"
+    end
   end
 end
