@@ -63,6 +63,8 @@ class Piece
   end
 
   def kills?(position)
+    return false unless inbounds?(position)
+
     x, y = position
 
     return true if @grid[x][y] && @grid[x][y].color != @color
