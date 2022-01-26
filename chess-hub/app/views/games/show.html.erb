@@ -13,7 +13,7 @@
 >
   <div id="moves">
     <h3>Moves</h3>
-    <ul>
+    <ul data-game-target="moves">
       <li data-game-target="move" data-fen="<%= Board::INITIAL_FEN %>">--</li>
       <% @game.moves.each_with_index do |move, i| %>
         <li data-game-target="move" data-fen="<%= @game.fens[i + 1] %>"><%= move %></li>

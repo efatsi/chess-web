@@ -11,7 +11,7 @@ class Game < ApplicationRecord
   end
 
   def board
-    @board ||= Board.new(fen: fens.last)
+    @board ||= Board.new(fen: current_fen)
   end
 
   def process_move(instruction)
@@ -22,7 +22,7 @@ class Game < ApplicationRecord
         fens:           self.fens + [board.to_fen],
         current_player: current_player == :white ? :black : :white
       })
-      ActionCable.server.broadcast("game_#{id}", { move: instruction.gsub("x", "-") })
+      ActionCable.server.broadcast("game_#{id}", { move: instruction.gsub("x", "-"), fen: current_fen })
 
       return { success: true }
 
@@ -33,6 +33,10 @@ class Game < ApplicationRecord
 
   def current_player
     super.to_sym
+  end
+
+  def current_fen
+    fens.last
   end
 
   private

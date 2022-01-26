@@ -3,7 +3,7 @@ import consumer from "../channels/consumer"
 import Chessboard from "../lib/chessboard"
 
 export default class extends Controller {
-  static targets = ["move"]
+  static targets = ["moves", "move"]
 
   static values = {
     fen: String,
@@ -11,32 +11,18 @@ export default class extends Controller {
   }
 
   connect() {
+    const _this = this
     this.board = this.initializeBoard()
-    const board = this.board
 
     this.gameChannel = consumer.subscriptions.create({channel: "GameChannel", id: this.idValue}, {
       received(data) {
-        console.log("RECEIVED WEBSOCKET:", data.move)
-        board.move(data.move)
+        _this.handleNewMove(data)
       },
     })
+  }
 
-    this.moveTargets.forEach((t) => {
-      t.onmouseover = () => {
-        clearTimeout(this.revertTimer)
-
-        board.position(t.dataset["fen"])
-        t.style.color = "red"
-      }
-
-      t.onmouseout = () => {
-        t.style.color = "black"
-
-        this.revertTimer = setTimeout(() => {
-          board.position(this.fenValue)
-        }, 10)
-      }
-    })
+  moveTargetConnected(el) {
+    this.attachMoveHandlers(el)
   }
 
   initializeBoard() {
@@ -45,7 +31,42 @@ export default class extends Controller {
       draggable: true,
     };
 
-    return Chessboard('board', opts);
+    return Chessboard("board", opts);
+  }
+
+  handleNewMove(data) {
+    console.log("RECEIVED WEBSOCKET:", data.move)
+
+    this.fenValue = data.fen
+    this.board.move(data.move)
+    this.appendMove(data)
+  }
+
+  appendMove(data) {
+    const li = document.createElement("li");
+    li.appendChild(document.createTextNode(data.move));
+    li.setAttribute("data-game-target", "move");
+    li.setAttribute("data-fen", data.fen);
+    this.attachMoveHandlers(li)
+
+    this.movesTarget.appendChild(li);
+  }
+
+  attachMoveHandlers(li) {
+    li.onmouseover = () => {
+      clearTimeout(this.revertTimer)
+
+      this.board.position(li.dataset["fen"])
+      li.style.color = "red"
+    }
+
+    li.onmouseout = () => {
+      li.style.color = null
+
+      this.revertTimer = setTimeout(() => {
+        this.board.position(this.fenValue)
+      }, 10)
+    }
   }
 }
 
