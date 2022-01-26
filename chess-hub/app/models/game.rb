@@ -22,7 +22,7 @@ class Game < ApplicationRecord
         fens:           self.fens + [board.to_fen],
         current_player: current_player == :white ? :black : :white
       })
-      ActionCable.server.broadcast("game_#{id}", { move: instruction.gsub("x", "-"), fen: current_fen })
+      ActionCable.server.broadcast("game_#{id}", { move: last_move, fen: current_fen })
 
       return { success: true }
 
@@ -31,8 +31,27 @@ class Game < ApplicationRecord
     end
   end
 
+  def reset_state(new_fen, wipe_history: false)
+    if wipe_history
+      self.update(
+        fens: [new_fen],
+        moves: []
+      )
+    else
+      self.update(
+        fens: self.fens + [new_fen],
+        moves: self.moves + ["RESET"]
+      )
+      ActionCable.server.broadcast("game_#{id}", { move: last_move, fen: current_fen })
+    end
+  end
+
   def current_player
     super.to_sym
+  end
+
+  def last_move
+    moves.last
   end
 
   def current_fen

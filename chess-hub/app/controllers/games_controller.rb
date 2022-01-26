@@ -22,4 +22,20 @@ class GamesController < ApplicationController
     #   message: move.message
     # }
   end
+
+  def update
+    game = Game.find(params[:game_id])
+    new_fen = params[:fen]
+
+    response = if params[:force] == "true"
+      game.reset_state(new_fen, wipe_history: params[:wipe])
+      { success: true }
+    elsif move = game.board.valid_move_to_get_to(new_fen)
+      game.process_move(move)
+    else
+      { success: false, message: "cannot find a possible move for that state" }
+    end
+
+    render json: response
+  end
 end

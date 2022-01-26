@@ -1,6 +1,6 @@
 import { Controller } from "@hotwired/stimulus"
 import consumer from "../channels/consumer"
-import Chessboard from "../lib/chessboard"
+import ChessBoard from "../lib/chessboard"
 
 export default class extends Controller {
   static targets = ["moves", "move"]
@@ -25,13 +25,24 @@ export default class extends Controller {
     this.attachMoveHandlers(el)
   }
 
+  async submit(e) {
+    const url = e.target.dataset["url"] + "&fen=" + this.board.fen()
+
+    const response = await fetch(url, {method: "POST"})
+    response.json().then(data => {
+      if (!data.success) {
+        this.board.position(this.fenValue)
+      }
+    })
+  }
+
   initializeBoard() {
     const opts = {
       position: this.fenValue,
       draggable: true,
     };
 
-    return Chessboard("board", opts);
+    return ChessBoard("board", opts);
   }
 
   handleNewMove(data) {

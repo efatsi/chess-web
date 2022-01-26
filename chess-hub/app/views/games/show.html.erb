@@ -16,7 +16,7 @@
     <ul data-game-target="moves" style="
       height: 462px;
       overflow: scroll;
-      width: 150px;
+      width: 100px;
       margin-bottom: 0;
       margin-right: 20px;
     ">
@@ -27,4 +27,10 @@
     </ul>
   </div>
   <div id="board" style="width: 500px;"></div>
+
+  <div id="actions" style="margin-left: 20px;">
+    <button data-action="click->game#submit" data-url="<%= game_update_path(@game, force: false) %>">Submit Move</button>
+    <br>
+    <button data-action="click->game#submit" data-url="<%= game_update_path(@game, force: true) %>">Hard Reset</button>
+  </div>
 </div>
