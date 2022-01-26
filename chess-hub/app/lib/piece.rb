@@ -18,32 +18,13 @@ class Piece
   end
 
   def self.from_fen(fen, grid, pos)
-    key = if fen == fen.upcase
-      "w#{fen}"
-    else
-      "b#{fen.upcase}"
-    end
-
-    self.from_key(key, grid, pos)
-  end
-
-  def to_key
-    "#{@color.to_s.first}#{piece_key}"
-  end
-
-  def self.from_key(key, grid, pos)
-    return if key == "--"
-
-    color = case key[0]
-    when "w"
+    color = if fen == fen.upcase
       :white
-    when "b"
-      :black
     else
-      raise "Unreadable color from key: #{key}"
+      :black
     end
 
-    klass = case key[1]
+    klass = case fen.upcase
     when "K"
       King
     when "Q"
@@ -57,10 +38,14 @@ class Piece
     when "P"
       Pawn
     else
-      raise "Unreadable klass from key: #{key}"
+      raise "Unreadable klass from fen: #{fen}"
     end
 
     klass.new(color, grid, pos)
+  end
+
+  def to_key
+    "#{@color.to_s.first}#{piece_key}"
   end
 
   def inspect

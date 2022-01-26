@@ -1,5 +1,6 @@
 class Board
   class InvalidMoveError < StandardError; end
+  class InvalidFenError < StandardError; end
   INITIAL_FEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR"
 
   attr_accessor :grid, :message
@@ -44,12 +45,20 @@ class Board
           j += 1
         end
       elsif char == "/"
+        if j != 8
+          raise InvalidFenError.new("Invalid FEN row: #{fen.split("/")[i]}")
+        end
+
         i += 1
         j = 0
       else
         @grid[i][j] = Piece.from_fen(char, @grid, [i,j])
         j += 1
       end
+    end
+
+    if j != 8 || i != 7
+      raise InvalidFenError.new("Incorrect number of something: row #{i}/7. col #{j}/8. fen #{fen}")
     end
   end
 
