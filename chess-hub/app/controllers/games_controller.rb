@@ -1,6 +1,11 @@
 class GamesController < ApplicationController
   skip_before_action :verify_authenticity_token
 
+  def new
+    @game = Game.create
+    redirect_to game_path(@game)
+  end
+
   def index
     @games = Game.all
   end
