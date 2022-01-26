@@ -38,6 +38,47 @@ class Board
     end
   end
 
+  def to_fen
+    fen = ""
+
+    8.times do |i|
+      8.times do |j|
+        fen += @grid[i][j].try(:to_fen) || "1"
+      end
+      fen += "/" unless i == 7
+    end
+
+    fen = fen.gsub("11111111", "8");
+    fen = fen.gsub("1111111", "7");
+    fen = fen.gsub("111111", "6");
+    fen = fen.gsub("11111", "5");
+    fen = fen.gsub("1111", "4");
+    fen = fen.gsub("111", "3");
+    fen = fen.gsub("11", "2");
+
+    fen
+  end
+
+  def load_from_fen(fen)
+    i = 0
+    j = 0
+
+    fen.split("").each do |char|
+      if char.match(/[1-8]/)
+        char.to_i.times do
+          @grid[i][j] = nil
+          j += 1
+        end
+      elsif char == "/"
+        i += 1
+        j = 0
+      else
+        @grid[i][j] = Piece.from_fen(char, @grid, [i,j])
+        j += 1
+      end
+    end
+  end
+
   def to_state
     state_string = ""
     8.times do |i|

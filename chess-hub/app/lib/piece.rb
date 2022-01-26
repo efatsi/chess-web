@@ -9,6 +9,24 @@ class Piece
     @pos = pos
   end
 
+  def to_fen
+    if color == :white
+      piece_key.upcase
+    else
+      piece_key.downcase
+    end
+  end
+
+  def self.from_fen(fen, grid, pos)
+    key = if fen == fen.upcase
+      "w#{fen}"
+    else
+      "b#{fen.upcase}"
+    end
+
+    self.from_key(key, grid, pos)
+  end
+
   def to_key
     "#{@color.to_s.first}#{piece_key}"
   end
