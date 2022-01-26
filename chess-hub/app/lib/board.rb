@@ -95,6 +95,7 @@ class Board
 
   def move(start, end_pos, color)
     start_row, start_col = start
+    end_row, end_col = end_pos
     moving_piece = @grid[start_row][start_col]
 
     if moving_piece.nil?
@@ -121,8 +122,6 @@ class Board
 
     end_row, end_col = end_pos
     if moved_into_check?(moving_piece, end_pos)
-      puts "Cannot move into check."
-      sleep(1)
       raise InvalidMoveError.new("Cannot move into check")
     end
 
@@ -147,7 +146,7 @@ class Board
     end
 
     if moving_piece.is_a?(Pawn) && moving_piece.promotion?
-      @grid[row][col] = Queen.new(moving_piece.color, @grid, moving_piece.pos)
+      @grid[end_row][end_col] = Queen.new(moving_piece.color, @grid, moving_piece.pos)
     elsif moving_piece.is_a?(Rook) || moving_piece.is_a?(King)
       moving_piece.castleable = false if moving_piece.castleable
     end
