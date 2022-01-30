@@ -6,8 +6,9 @@ export default class extends Controller {
   static targets = ["moves", "move", "message"]
 
   static values = {
-    fen: String,
     id: Number,
+    fen: String,
+    message: String,
   }
 
   connect() {
@@ -51,8 +52,11 @@ export default class extends Controller {
 
     this.fenValue = data.fen
     this.board.position(data.fen)
-    this.appendMove(data)
+
+    this.messageValue = data.message
     this.messageTarget.innerText = data.message
+
+    this.appendMove(data)
   }
 
   appendMove(data) {
@@ -60,6 +64,7 @@ export default class extends Controller {
     li.appendChild(document.createTextNode(data.move));
     li.setAttribute("data-game-target", "move");
     li.setAttribute("data-fen", data.fen);
+    li.setAttribute("data-message", data.message);
     this.attachMoveHandlers(li)
 
     this.movesTarget.appendChild(li);
@@ -70,6 +75,7 @@ export default class extends Controller {
       clearTimeout(this.revertTimer)
 
       this.board.position(li.dataset["fen"])
+      this.messageTarget.innerText = li.dataset["message"]
       li.style.color = "red"
     }
 
@@ -78,6 +84,7 @@ export default class extends Controller {
 
       this.revertTimer = setTimeout(() => {
         this.board.position(this.fenValue)
+        this.messageTarget.innerText = this.messageValue
       }, 10)
     }
 

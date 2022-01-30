@@ -7,8 +7,9 @@
 
 <div
   data-controller="game"
-  data-game-fen-value="<%= @game.board.to_fen %>"
   data-game-id-value="<%= @game.id %>"
+  data-game-fen-value="<%= @game.current_fen %>"
+  data-game-message-value="<%= @game.current_message %>"
   style="display: flex; flex-direction: row; justify-content: center;"
 >
   <div id="moves">
@@ -20,9 +21,14 @@
       margin-bottom: 0;
       margin-right: 20px;
     ">
-      <li data-game-target="move" data-fen="<%= Board::INITIAL_FEN %>">--</li>
-      <% @game.moves.each_with_index do |move, i| %>
-        <li data-game-target="move" data-fen="<%= @game.fens[i + 1] %>"><%= move %></li>
+      <% @game.state_history.each_with_index do |state, i| %>
+        <li
+          data-game-target="move"
+          data-fen="<%= state["fen"] %>"
+          data-message="<%= state["message"] %>"
+        >
+          <%= state["move"] || "[start]" %>
+        </li>
       <% end %>
     </ul>
   </div>

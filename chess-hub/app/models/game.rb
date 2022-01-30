@@ -1,13 +1,15 @@
 class Game < ApplicationRecord
-  INITIAL_FEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR"
-
-  validate :fens_and_moves
-
   def initialize(opts = {})
     super
 
     @board = Board.new
-    self.fens = [@board.to_fen]
+    self.state_history = [
+      {
+        fen: @board.to_fen,
+        current_player: :white,
+        message: @board.current_message(:white, :black)
+      }
+    ]
   end
 
   def board
@@ -17,13 +19,14 @@ class Game < ApplicationRecord
   def process_move(instruction)
     begin
       board.attempt_move(instruction, current_player)
-      self.update({
-        moves:          self.moves + [instruction],
-        fens:           self.fens + [board.to_fen],
-        current_player: next_player
-      })
-      broadcast_game_state
+      self.update(state_history: state_history + [{
+        move: instruction,
+        fen: board.to_fen,
+        current_player: next_player,
+        message: board.current_message(next_player, current_player)
+      }])
 
+      broadcast_game_state
       return { success: true }
 
     rescue Board::InvalidMoveError => e
@@ -33,69 +36,60 @@ class Game < ApplicationRecord
 
   def reset_state(new_fen, wipe_history: false)
     if wipe_history
-      self.update(
-        fens: [new_fen],
-        moves: []
-      )
+      self.update(state_history: [{
+        fen: new_fen,
+        current_player: current_player,
+        message: board.current_message(current_player, next_player)
+      }])
     else
-      self.update(
-        fens: self.fens + [new_fen],
-        moves: self.moves + ["RESET"]
-      )
+      self.update(state_history: state_history + [{
+        move: "RESET",
+        fen: new_fen,
+        current_player: current_player,
+        message: board.current_message(current_player, next_player)
+      }])
+
+      reset_board
       broadcast_game_state
     end
   end
 
+  def back(steps = 1)
+    last_index = -1 - steps
+    self.state_history = self.state_history[0..last_index]
+
+    reset_board
+    broadcast_game_state
+  end
+
   def current_player
-    super.to_sym
+    current_state[:current_player].to_sym
   end
 
   def next_player
     current_player == :white ? :black : :white
   end
 
-  def last_move
-    moves.last
-  end
-
   def current_fen
-    fens.last
-  end
-
-  def back(steps = 1)
-    last_index = -1 - steps
-    self.update(
-      moves: self.moves[0..last_index],
-      fens: self.fens[0..last_index],
-      current_player: steps.odd? ? next_player : current_player
-    )
-
-    # clear cached board which is now too far in the future
-    @board = nil
-    broadcast_game_state
+    current_state[:fen]
   end
 
   def current_message
-    board.current_message(current_player, next_player)
+    current_state[:message]
+  end
+
+  def current_state
+    state_history.last.with_indifferent_access
   end
 
   private
 
-  def fens_and_moves
-    if fens.length < 1
-      errors.add(:fens, "must have at least one fen")
-    end
-
-    if moves.length != fens.length - 1
-      errors.add(:moves, "length should be #{fens.length - 1} (1 less then length of fens)")
-    end
+  def broadcast_game_state
+    ActionCable.server.broadcast("game_#{id}", current_state)
   end
 
-  def broadcast_game_state
-    ActionCable.server.broadcast("game_#{id}", {
-      move: last_move,
-      fen: current_fen,
-      message: current_message
-    })
+  def reset_board
+    # clear cached board which is now too far in the future
+    @board = nil
   end
 end

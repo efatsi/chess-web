@@ -239,12 +239,14 @@ class Board
 
   def current_message(current_player, other_player)
     if check?(current_player)
-      @message = "#{current_player} is in check!"
+      @message = "#{current_player.capitalize} is in check!"
       if checkmate?(current_player)
         @message = "Checkmate! #{other_player} wins."
       end
     else
       @message = "Next up: #{current_player}"
     end
+
+    @message
   end
 end
