@@ -5,5 +5,6 @@ Rails.application.routes.draw do
     post :move
     post :update
     post :back
+    post :change_player
   end
 end

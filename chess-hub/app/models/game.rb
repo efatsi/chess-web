@@ -62,6 +62,12 @@ class Game < ApplicationRecord
     broadcast_game_state if broadcast
   end
 
+  def change_player
+    self.state_history.last["message"] = board.current_message(next_player, current_player)
+    self.state_history.last["current_player"] = next_player
+    self.save
+  end
+
   def current_player
     current_state[:current_player].to_sym
   end

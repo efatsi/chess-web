@@ -84,6 +84,10 @@ export default class extends Controller {
   }
 
   handleDrop = (source, target, piece, newPos, oldPos, orientation) => {
+    if (ChessBoard.objToFen(newPos) == ChessBoard.objToFen(oldPos)) {
+      return
+    }
+
     if (!this.debug) {
       this.submitMove(ChessBoard.objToFen(newPos))
     }
@@ -92,7 +96,6 @@ export default class extends Controller {
   toggleDebug() {
     this.debug = !this.debug
 
-    console.log("debug", this.debug)
     this.debuggerTargets.forEach((t) => {
       if (this.debug) {
         t.removeAttribute("disabled")
@@ -133,5 +136,20 @@ export default class extends Controller {
     this.messageTarget.innerText = newLast.dataset["message"]
 
     fetch(url, {method: "POST"})
+  }
+
+  async changePlayer(e) {
+    const url = e.target.dataset["url"]
+
+    const response = await fetch(url, {method: "POST"})
+    response.json().then(data => {
+      if (data.success) {
+        this.messageTarget.innerText = data.message
+
+        const last = this.moveTargets[this.moveTargets.length-1]
+        last.setAttribute("data-message", data.message);
+        this.messageValue = data.message
+      }
+    })
   }
 }

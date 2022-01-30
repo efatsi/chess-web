@@ -50,4 +50,11 @@ class GamesController < ApplicationController
     game.back(broadcast: false)
     render json: { success: true }
   end
+
+  def change_player
+    game = Game.find(params[:game_id])
+    game.change_player
+
+    render json: { success: true, message: game.current_message }
+  end
 end
