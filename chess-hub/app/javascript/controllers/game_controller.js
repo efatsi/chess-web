@@ -3,7 +3,7 @@ import consumer from "../channels/consumer"
 import ChessBoard from "../lib/chessboard"
 
 export default class extends Controller {
-  static targets = ["moves", "move", "message"]
+  static targets = ["moves", "move", "message", "debugger"]
 
   static values = {
     id: Number,
@@ -14,6 +14,7 @@ export default class extends Controller {
 
   connect() {
     this.board = this.initializeBoard()
+    this.debug = false
 
     const _this = this
     this.gameChannel = consumer.subscriptions.create({channel: "GameChannel", id: this.idValue}, {
@@ -83,15 +84,34 @@ export default class extends Controller {
   }
 
   handleDrop = (source, target, piece, newPos, oldPos, orientation) => {
-    this.submitMove(ChessBoard.objToFen(newPos))
+    if (!this.debug) {
+      this.submitMove(ChessBoard.objToFen(newPos))
+    }
+  }
+
+  toggleDebug() {
+    this.debug = !this.debug
+
+    console.log("debug", this.debug)
+    this.debuggerTargets.forEach((t) => {
+      if (this.debug) {
+        t.removeAttribute("disabled")
+      } else {
+        t.setAttribute("disabled", "disabled")
+      }
+    })
   }
 
   submit(e) {
     this.submitMove(this.board.fen())
   }
 
-  async submitMove(newFen) {
-    const url = this.updateValue + "&fen=" + newFen
+  reset(e) {
+    this.submitMove(this.board.fen(), true)
+  }
+
+  async submitMove(newFen, force=false) {
+    const url = this.updateValue + "?fen=" + newFen + "&force=" + force
 
     const response = await fetch(url, {method: "POST"})
     response.json().then(data => {
