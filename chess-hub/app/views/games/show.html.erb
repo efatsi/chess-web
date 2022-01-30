@@ -10,6 +10,7 @@
   data-game-id-value="<%= @game.id %>"
   data-game-fen-value="<%= @game.current_fen %>"
   data-game-message-value="<%= @game.current_message %>"
+  data-game-update-value="<%= game_update_path(@game, force: false) %>"
   style="display: flex; flex-direction: row; justify-content: center;"
 >
   <div id="moves">

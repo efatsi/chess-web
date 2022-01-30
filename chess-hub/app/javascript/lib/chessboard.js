@@ -217,7 +217,7 @@ function objToBoardState(obj) {
   return bs;
 }
 
-export default function(containerElOrId, cfg) {
+function ChessBoard(containerElOrId, cfg) {
   'use strict';
 
   cfg = cfg || {};
@@ -1737,3 +1737,6 @@ export default function(containerElOrId, cfg) {
   // return the widget object
   return widget;
 };
+
+ChessBoard.objToFen = objToFen
+export default ChessBoard

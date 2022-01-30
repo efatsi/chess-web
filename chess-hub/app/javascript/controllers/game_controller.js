@@ -9,6 +9,7 @@ export default class extends Controller {
     id: Number,
     fen: String,
     message: String,
+    update: String
   }
 
   connect() {
@@ -26,35 +27,11 @@ export default class extends Controller {
     this.attachMoveHandlers(el)
   }
 
-  async submit(e) {
-    const url = e.target.dataset["url"] + "&fen=" + this.board.fen()
-
-    const response = await fetch(url, {method: "POST"})
-    response.json().then(data => {
-      if (!data.success) {
-        console.log("Invalid move:", data.message)
-        this.board.position(this.fenValue)
-      }
-    })
-  }
-
-  back(e) {
-    const url = e.target.dataset["url"]
-
-    const last = this.moveTargets[this.moveTargets.length-1]
-    last.remove()
-
-    const newLast = this.moveTargets[this.moveTargets.length-1]
-    this.board.position(newLast.dataset["fen"])
-    this.messageTarget.innerText = newLast.dataset["message"]
-
-    fetch(url, {method: "POST"})
-  }
-
   initializeBoard() {
     const opts = {
       position: this.fenValue,
       draggable: true,
+      onDrop: this.handleDrop
     };
 
     return ChessBoard("board", opts);
@@ -104,10 +81,37 @@ export default class extends Controller {
     const el = this.movesTarget
     el.scrollTop = el.scrollHeight - el.clientHeight
   }
-}
 
-// DEMO BROADCAST
-// setTimeout(() => {
-//   console.log("sending fake message")
-//   this.gameChannel.send({ sent_by: "Paul", body: "This is a cool chat app." })
-// }, 1000)
+  handleDrop = (source, target, piece, newPos, oldPos, orientation) => {
+    this.submitMove(ChessBoard.objToFen(newPos))
+  }
+
+  submit(e) {
+    this.submitMove(this.board.fen())
+  }
+
+  async submitMove(newFen) {
+    const url = this.updateValue + "&fen=" + newFen
+
+    const response = await fetch(url, {method: "POST"})
+    response.json().then(data => {
+      if (!data.success) {
+        console.log("Invalid move:", data.message)
+        this.board.position(this.fenValue)
+      }
+    })
+  }
+
+  back(e) {
+    const url = e.target.dataset["url"]
+
+    const last = this.moveTargets[this.moveTargets.length-1]
+    last.remove()
+
+    const newLast = this.moveTargets[this.moveTargets.length-1]
+    this.board.position(newLast.dataset["fen"])
+    this.messageTarget.innerText = newLast.dataset["message"]
+
+    fetch(url, {method: "POST"})
+  }
+}
