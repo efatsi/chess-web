@@ -38,6 +38,19 @@ export default class extends Controller {
     })
   }
 
+  back(e) {
+    const url = e.target.dataset["url"]
+
+    const last = this.moveTargets[this.moveTargets.length-1]
+    last.remove()
+
+    const newLast = this.moveTargets[this.moveTargets.length-1]
+    this.board.position(newLast.dataset["fen"])
+    this.messageTarget.innerText = newLast.dataset["message"]
+
+    fetch(url, {method: "POST"})
+  }
+
   initializeBoard() {
     const opts = {
       position: this.fenValue,

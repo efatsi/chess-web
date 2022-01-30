@@ -43,6 +43,8 @@
   <div id="actions" style="margin-left: 20px;">
     <button data-action="click->game#submit" data-url="<%= game_update_path(@game, force: false) %>">Submit Move</button>
     <br>
+    <br>
     <button data-action="click->game#submit" data-url="<%= game_update_path(@game, force: true) %>">Hard Reset</button>
+    <button data-action="click->game#back" data-url="<%= game_back_path(@game) %>">Back</button>
   </div>
 </div>

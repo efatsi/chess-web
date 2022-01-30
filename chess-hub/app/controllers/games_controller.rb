@@ -43,4 +43,11 @@ class GamesController < ApplicationController
 
     render json: response
   end
+
+  def back
+    game = Game.find(params[:game_id])
+
+    game.back(broadcast: false)
+    render json: { success: true }
+  end
 end

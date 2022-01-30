@@ -4,5 +4,6 @@ Rails.application.routes.draw do
   resources :games, only: [:new, :index, :show] do
     post :move
     post :update
+    post :back
   end
 end

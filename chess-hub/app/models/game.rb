@@ -54,12 +54,12 @@ class Game < ApplicationRecord
     end
   end
 
-  def back(steps = 1)
+  def back(steps: 1, broadcast: true)
     last_index = -1 - steps
-    self.state_history = self.state_history[0..last_index]
+    self.update(state_history: self.state_history[0..last_index])
 
     reset_board
-    broadcast_game_state
+    broadcast_game_state if broadcast
   end
 
   def current_player
