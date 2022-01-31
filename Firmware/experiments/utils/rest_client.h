@@ -35,6 +35,8 @@ class RestClient {
 
     // POST path and body
     int post(const char* path, const char* body);
+    // POST path and response
+    int post(const char* path, String*);
     // POST path and body and response
     int post(const char* path, const char* body, String*);
 

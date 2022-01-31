@@ -49,6 +49,11 @@ int RestClient::post(const char* path, const char* body){
   return request("POST", path, body, NULL);
 }
 
+// POST path and response
+int RestClient::post(const char* path, String* response){
+  return request("POST", path, NULL, response);
+}
+
 // POST path and body with response
 int RestClient::post(const char* path, const char* body, String* response){
   return request("POST", path, body, response);
