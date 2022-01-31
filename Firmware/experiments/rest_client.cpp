@@ -161,6 +161,7 @@ int RestClient::readResponse(String* response) {
 
   // an http request ends with a blank line
   boolean currentLineIsBlank = true;
+  boolean upcomingHttpBody = false;
   boolean httpBody = false;
   boolean inStatus = false;
 
@@ -204,8 +205,11 @@ int RestClient::readResponse(String* response) {
         HTTP_DEBUG_PRINT("HTTP: return readResponse2\n");
         return code;
       }
-      if (c == '\n' && currentLineIsBlank) {
+      if (c == '\n' && upcomingHttpBody) {
         httpBody = true;
+      }
+      if (c == '\n' && currentLineIsBlank) {
+        upcomingHttpBody = true;
       }
       if (c == '\n') {
         // you're starting a new lineu

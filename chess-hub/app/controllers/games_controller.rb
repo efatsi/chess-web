@@ -20,12 +20,6 @@ class GamesController < ApplicationController
     # example moves: a2-a8, d3xd4
     move = game.process_move(params[:move])
     render json: move
-
-    # move = Move.new(game, params[:move])
-    # render json: {
-    #   success: move.success,
-    #   message: move.message
-    # }
   end
 
   def update
