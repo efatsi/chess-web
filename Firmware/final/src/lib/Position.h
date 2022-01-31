@@ -11,7 +11,7 @@ class Position {
   #define WHITE 1
   #define BLACK 2
 
-  #define CONFIRM_TIME 5000
+  #define CONFIRM_TIME 1000
 
 public:
   String position;

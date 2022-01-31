@@ -108,17 +108,6 @@ public:
     pinMode(D5, OUTPUT);
 
     pinMode(sensorPin, INPUT);
-
-    // set initial positions
-    for (int i = 0; i < 16; i++) {
-      Position &position = positions[i];
-      position.occupiedBy = awayPlayer;
-    }
-
-    for (int i = 48; i < 64; i++) {
-      Position &position = positions[i];
-      position.occupiedBy = homePlayer;
-    }
   }
 
   void determineState(int cp) {
@@ -139,11 +128,11 @@ public:
     if (stableUpCount == 1 && stableDownCount == 1) {
       if (ups[0].wasOccupiedBy == currentPlayer && downs[0].wasOccupiedBy == waitingPlayer) {
         // current captured waiting
-        moveString = ups[0].position + " x " + downs[0].position;
+        moveString = ups[0].position + "x" + downs[0].position;
         return true;
       } else if (ups[0].wasOccupiedBy == currentPlayer && downs[0].wasOccupiedBy == EMPTY) {
         // moved to empty space
-        moveString = ups[0].position + " - " + downs[0].position;
+        moveString = ups[0].position + "-" + downs[0].position;
         return true;
       } else {
         // TODO: en pessant / castle / orrr something's not right

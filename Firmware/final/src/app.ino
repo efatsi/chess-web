@@ -1,5 +1,9 @@
-#include "Screen.h"
-#include "Board.h"
+#include "lib/Screen.h"
+#include "lib/Board.h"
+
+#include "utils/rest_client.h"
+
+RestClient client = RestClient("6991-2601-5c2-201-7a90-1caf-5e81-96ed-61fd.ngrok.io");
 
 Screen screen;
 Board board;
@@ -13,7 +17,7 @@ int waitingPlayer = BLACK;
 int homePlayer;
 int awayPlayer;
 
-SYSTEM_MODE(MANUAL);
+SYSTEM_MODE(SEMI_AUTOMATIC);
 
 void setup() {
   Particle.function("screen", updateScreen);
@@ -32,6 +36,8 @@ void setup() {
 
   board.init(homePlayer, awayPlayer);
   screen.init(homePlayer == WHITE ? "WHITE" : "BLACK");
+
+  Particle.connect();
 }
 
 void loop() {
@@ -41,9 +47,9 @@ void loop() {
     confirmChanges(board.moveString);
   }
 
-  board.printBinary();
+  // board.printBinary();
   // board.printReadings();
-  // board.printFullStatus();
+  board.printFullStatus();
   delay(50);
 }
 
@@ -52,6 +58,15 @@ void confirmChanges(String move) {
   String player = currentPlayer == WHITE ? "White" : "Black";
   if (homePlayer == currentPlayer) {
     screen.printMove(player, move);
+
+    Serial.println("Posting: /games/4/move?move=" + move);
+
+    String response;
+    int statusCode = client.post("/games/4/move?move=" + move, &response);
+
+    Serial.println("Response got");
+    Serial.println(statusCode);
+    Serial.println(response);
   } else {
     screen.printMove(player, move);
     // screen.rawPrint("   satisfied");
