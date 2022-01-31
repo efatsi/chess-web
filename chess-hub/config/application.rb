@@ -23,6 +23,7 @@ module ChessHub
     # Initialize configuration defaults for originally generated Rails version.
     config.load_defaults 7.0
 
+    config.hosts << "6991-2601-5c2-201-7a90-1caf-5e81-96ed-61fd.ngrok.io"
     # Configuration for the application, engines, and railties goes here.
     #
     # These settings can be overridden in specific environments using the files
