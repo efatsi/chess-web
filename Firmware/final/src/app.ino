@@ -78,7 +78,7 @@ int updateLight(String command) {
 
 int updateScreen(String player) {
   // TODO: split on deliminator to split player and move
-  String move = "g4 - h4"
+  String move = "g4 - h4";
   screen.printPlayerMove(player, move);
   return 1;
 }
