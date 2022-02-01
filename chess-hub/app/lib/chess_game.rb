@@ -17,9 +17,9 @@ class ChessGame
         pos_1 = @display.get_move(@current_player)
         pos_2 = @display.get_move(@current_player)
         @board.move(pos_1, pos_2, @current_player)
-      rescue ArgumentError
-        puts "Invalid move. Please try again."
-        sleep(0.7)
+      rescue Board::InvalidMoveError => e
+        puts e.message
+        sleep(1)
         retry
       end
 

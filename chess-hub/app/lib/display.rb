@@ -56,7 +56,6 @@ class Display
     result = nil
     until result
       render
-      puts "#{color}'s move"
       puts @board.message if @board.message
       result = get_input
     end
