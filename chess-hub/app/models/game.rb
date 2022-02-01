@@ -1,4 +1,6 @@
 class Game < ApplicationRecord
+  has_many :photon_boards, dependent: :destroy
+
   def initialize(opts = {})
     super
 
@@ -12,6 +14,10 @@ class Game < ApplicationRecord
     ]
   end
 
+  def self.most_recent
+    self.last || self.create
+  end
+
   def board
     @board ||= Board.new(fen: current_fen)
   end
@@ -19,6 +25,8 @@ class Game < ApplicationRecord
   def process_move(instruction)
     begin
       board.attempt_move(instruction, current_player)
+
+      # Update database
       self.update(state_history: state_history + [{
         move: instruction,
         fen: board.to_fen,
@@ -26,7 +34,12 @@ class Game < ApplicationRecord
         message: board.current_message(next_player, current_player)
       }])
 
+      # Update frontend (if connected)
       broadcast_game_state
+
+      # Update other board (if connected)
+      photon_boards.find_by(color: next_player).try(:alert, instruction)
+
       return { success: true }
 
     rescue Board::InvalidMoveError => e

@@ -6,5 +6,7 @@ Rails.application.routes.draw do
     post :update
     post :back
     post :change_player
+
+    get :connect, on: :collection
   end
 end

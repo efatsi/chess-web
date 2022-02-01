@@ -51,4 +51,22 @@ class GamesController < ApplicationController
 
     render json: { success: true, message: game.current_message }
   end
+
+  def connect
+    game = Game.most_recent
+    device_id = params[:device_id]
+    color = params[:color]
+
+    if !(device_id && color)
+      render json: { success: false, message: "Must pass device_id and color parameters" }
+    else
+      photon_board = game.photon_boards.where(device_id: device_id).first_or_initialize
+
+      if photon_board.update(color: color)
+        render json: { success: true, game_id: game.id }
+      else
+        render json: { success: false, message: photon_board.errors.full_messages.first }
+      end
+    end
+  end
 end
