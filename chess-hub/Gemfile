@@ -13,6 +13,7 @@ gem "stimulus-rails"
 gem "redis", "~> 4.0"
 gem "bootsnap", require: false
 gem "ruby_spark", "~> 2.0.0"
+gem "sucker_punch"
 gem "colorize"
 
 group :development, :test do

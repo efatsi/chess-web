@@ -7,16 +7,6 @@ class PhotonBoard < ApplicationRecord
   }
 
   def alert(instruction)
-    photon.function("other-move", instruction)
-  rescue => e
-    # Timeout isn't working
-    # should probably move to background job anyway
-    puts "Photon function call error: #{e.message}"
-  end
-
-  private
-
-  def photon
-    @photon ||= RubySpark::Device.new(device_id)
+    PhotonJob.perform_async(device_id, "other-move", instruction)
   end
 end
