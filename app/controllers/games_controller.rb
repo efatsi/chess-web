@@ -63,7 +63,13 @@ class GamesController < ApplicationController
       photon_board = game.photon_boards.where(device_id: device_id).first_or_initialize
 
       if photon_board.update(color: color)
-        render json: { success: true, game_id: game.id, message: game.current_message }
+        render json: {
+          success: true,
+          game_id: game.id,
+          message: game.current_message,
+          player: game.current_player,
+          fen: game.current_fen
+        }
       else
         render json: { success: false, message: photon_board.errors.full_messages.first }
       end
