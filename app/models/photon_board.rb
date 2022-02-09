@@ -7,6 +7,6 @@ class PhotonBoard < ApplicationRecord
   }
 
   def alert(instruction)
-    PhotonJob.perform_async(device_id, "other-move", instruction)
+    PhotonJob.perform_async(device_id, "other-move", instruction.gsub("-", " - "))
   end
 end
