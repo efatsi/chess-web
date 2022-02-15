@@ -40,10 +40,10 @@ class Game < ApplicationRecord
       # Update other board (if connected)
       photon_boards.find_by(color: current_player).try(:alert, instruction)
 
-      return { success: true }
+      return { success: true, fen: current_fen }
 
     rescue Board::InvalidMoveError => e
-      return { success: false, message: e.message }
+      return { success: false, message: e.message, fen: current_fen }
     end
   end
 
