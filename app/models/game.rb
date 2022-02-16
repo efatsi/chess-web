@@ -38,7 +38,7 @@ class Game < ApplicationRecord
       broadcast_game_state
 
       # Update other board (if connected)
-      photon_boards.find_by(color: current_player).try(:alert, instruction)
+      photon_boards.find_by(color: current_player).try(:alert, instruction, current_fen)
 
       return { success: true, fen: current_fen }
 
