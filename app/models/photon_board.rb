@@ -6,10 +6,11 @@ class PhotonBoard < ApplicationRecord
     message: "'%{value}' is invalid. Must be 'white' or 'black'."
   }
 
-  def alert(move, fen)
+  def alert(move)
     data = {
       move: move.gsub("-", " - "),
-      fen: fen
+      fen: game.current_fen,
+      message: game.current_message,
     }.to_json
 
     PhotonJob.perform_async(device_id, "other-move", data)
