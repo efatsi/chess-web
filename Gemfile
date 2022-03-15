@@ -15,6 +15,7 @@ gem "bootsnap", require: false
 gem "ruby_spark", "~> 2.0.0"
 gem "sucker_punch"
 gem "colorize"
+gem "awesome_print"
 
 group :development, :test do
   gem "pry-rails"
